@@ -1,0 +1,320 @@
+{
+  "name": "BEWARE JOBS AI Mail Flow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "beware-jobs-ai-mail",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_main",
+      "name": "AI Mail Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        220,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "mode",
+              "name": "mode",
+              "value": "={{$json.body.mode || 'report'}}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{$json.body.email || ''}}",
+              "type": "string"
+            },
+            {
+              "id": "user_name",
+              "name": "user_name",
+              "value": "={{$json.body.userName || 'Ogrenci'}}",
+              "type": "string"
+            },
+            {
+              "id": "selected_career",
+              "name": "selected_career",
+              "value": "={{$json.body.selectedCareer || 'Henuz secilmedi'}}",
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "={{$json.body.message || ''}}",
+              "type": "string"
+            },
+            {
+              "id": "questions",
+              "name": "questions",
+              "value": "={{JSON.stringify($json.body.questions || [])}}",
+              "type": "string"
+            },
+            {
+              "id": "scores",
+              "name": "scores",
+              "value": "={{JSON.stringify($json.body.scores || {})}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "prepare_payload",
+      "name": "Prepare Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        460,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "version": 2,
+            "leftValue": "",
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "mentor_mode",
+              "leftValue": "={{$json.mode}}",
+              "rightValue": "mentor",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "mode_switch",
+      "name": "Mentor mu?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        700,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "GEMINI_API_KEY_BURAYA"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ systemInstruction: { parts: [{ text: 'Sen lise ogrencileriyle konusan sicak ve dogrudan bir kariyer mentorusun. Her zaman Turkce cevap ver. Soruyu tam olarak cevapla.' }] }, contents: [{ role: 'user', parts: [{ text: `Kullanici: ${$json.user_name}\\nSecili meslek: ${$json.selected_career}\\nSoru: ${$json.message}` }] }] }) }}",
+        "options": {}
+      },
+      "id": "mentor_gemini",
+      "name": "Mentor Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "GEMINI_API_KEY_BURAYA"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ systemInstruction: { parts: [{ text: 'Sen ogrenciler icin duzenli ve somut kariyer raporlari hazirlayan bir mentorsun. Her zaman Turkce cevap ver. Sorulari tek tek cevapla ve kisa bir genel ozet yaz.' }] }, contents: [{ role: 'user', parts: [{ text: `Kullanici: ${$json.user_name}\\nSecili meslek: ${$json.selected_career}\\nRIASEC skorleri: ${$json.scores}\\nSorular: ${$json.questions}` }] }] }) }}",
+        "options": {}
+      },
+      "id": "report_gemini",
+      "name": "Report Gemini",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        960,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parts = $json.candidates?.[0]?.content?.parts || [];\nconst text = parts.filter((part) => typeof part.text === 'string').map((part) => part.text).join('\\n').trim();\nreturn [{ json: { reply: text || 'Mentor cevabi olusturulamadi.', message: 'AI cevabi hazir.' } }];"
+      },
+      "id": "parse_mentor",
+      "name": "Parse Mentor",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parts = $json.candidates?.[0]?.content?.parts || [];\nconst text = parts.filter((part) => typeof part.text === 'string').map((part) => part.text).join('\\n').trim();\nconst safeText = text || 'Soru analizi olusturulamadi.';\nreturn [{ json: { report: safeText, html: `<div class=\"rounded-xl border border-black/10 bg-[#fffdf8] p-4 text-sm text-smoke whitespace-pre-line\">${safeText.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>`, message: 'AI analizi hazir.' } }];"
+      },
+      "id": "parse_report",
+      "name": "Parse Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        380
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond_success",
+      "name": "Return Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1460,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "AI Mail Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Payload": {
+      "main": [
+        [
+          {
+            "node": "Mentor mu?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mentor mu?": {
+      "main": [
+        [
+          {
+            "node": "Mentor Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Report Gemini",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mentor Gemini": {
+      "main": [
+        [
+          {
+            "node": "Parse Mentor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Report Gemini": {
+      "main": [
+        [
+          {
+            "node": "Parse Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Mentor": {
+      "main": [
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Report": {
+      "main": [
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "beware-jobs-ai-mail-v1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

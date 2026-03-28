@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BEWARE!: JOBS - AI Career Navigator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              creamBg: "#faf0e6",
+              panelIvory: "#fffdf8",
+              ink: "#1f1f1f",
+              smoke: "#333333",
+              bronze: "#8c6a43",
+              goldLight: "#d4af7a"
+            },
+            boxShadow: {
+              oldmoney: "0 10px 30px rgba(0, 0, 0, 0.08)"
+            }
+          }
+        }
+      };
+    </script>
+    <style>
+      * { font-family: "Georgia", "Times New Roman", serif; }
+      body {
+        background: radial-gradient(circle at 15% 10%, rgba(140, 106, 67, 0.08), transparent 30%),
+                    radial-gradient(circle at 85% 0%, rgba(140, 106, 67, 0.05), transparent 30%),
+                    #faf0e6;
+      }
+      .dashboard-btn {
+        letter-spacing: 0.01em;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+        transition: all 0.2s ease;
+      }
+      .dashboard-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+      }
+      .loading-bar {
+        animation: loadingPulse 1.4s ease-in-out infinite;
+      }
+      @keyframes loadingPulse {
+        0% { transform: translateX(-55%); }
+        50% { transform: translateX(40%); }
+        100% { transform: translateX(-55%); }
+      }
+      .chat-container {
+        max-height: 400px;
+        overflow-y: auto;
+      }
+      .message-bubble {
+        max-width: 85%;
+        word-wrap: break-word;
+      }
+      .career-card {
+        transition: all 0.2s ease;
+      }
+      .career-card:hover {
+        transform: translateY(-4px);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-creamBg text-ink">
+    <div class="mx-auto flex min-h-screen w-full max-w-6xl items-center justify-center px-5 py-10">
+      <main id="app" class="w-full rounded-3xl border border-black/15 bg-panelIvory p-6 shadow-oldmoney md:p-10">
+        
+        <!-- GREETING SCREEN -->
+        <section id="greeting-screen" class="screen-panel space-y-6">
+          <div class="text-center">
+            <p class="text-sm uppercase tracking-[0.35em] text-bronze">The Greeting</p>
+            <h1 class="mt-2 text-4xl font-bold tracking-wide text-ink md:text-5xl">BEWARE!: <span class="text-bronze">JOBS</span></h1>
+            <p class="mx-auto mt-3 max-w-2xl text-base text-smoke md:text-lg">AI destekli kariyer rehberinle geleceğini keşfet.</p>
+          </div>
+
+          <div id="name-step" class="mx-auto max-w-xl rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+            <label for="name-input" class="block text-sm font-semibold text-smoke">İsmin nedir?</label>
+            <input id="name-input" type="text" class="mt-3 w-full rounded-xl border border-black/20 bg-white px-4 py-3 text-base text-ink outline-none focus:border-[#8c6a43]" placeholder="İsmini buraya yazabilirsin" />
+            <button id="save-name-btn" type="button" class="mt-4 w-full rounded-xl border border-black/25 bg-[#1f1f1f] px-4 py-3 font-semibold text-[#faf0e6] transition hover:opacity-90">Kariyer Yolculuğuna Başla</button>
+          </div>
+        </section>
+
+        <!-- LANDING SCREEN -->
+        <section id="landing-screen" class="screen-panel hidden space-y-8">
+          <div class="text-center">
+            <p class="text-sm uppercase tracking-[0.35em] text-bronze">Career Navigator Dashboard</p>
+            <h1 class="mt-2 text-4xl font-bold tracking-wide text-ink md:text-6xl">BEWARE!: <span class="text-bronze">JOBS</span></h1>
+            <p class="mx-auto mt-3 max-w-2xl text-base text-smoke md:text-lg">AI destekli kariyer rehberinle geleceğini keşfet.</p>
+            <p id="daily-inspiration" class="mx-auto mt-5 max-w-2xl text-lg italic text-[#5b4631] md:text-xl"></p>
+          </div>
+
+          <div class="mx-auto grid max-w-2xl gap-4">
+            <button id="start-btn" class="dashboard-btn rounded-2xl border border-black/30 bg-white px-8 py-5 text-lg font-semibold text-ink transition" type="button">✨ Kariyer Testini Çöz & Geleceğini Keşfet</button>
+            <button id="vision-btn" class="rounded-2xl border border-black/20 bg-transparent px-8 py-4 text-base font-semibold text-smoke transition hover:border-black/35 hover:bg-[#fbf6ed]" type="button">📚 Meslek Seçim Rehberi</button>
+            <button id="reset-user-btn" class="rounded-2xl border border-black/20 bg-transparent px-8 py-4 text-base font-semibold text-smoke transition hover:border-black/35 hover:bg-[#fbf6ed]" type="button">👤 İsmi Sıfırla</button>
+          </div>
+
+          <div class="grid gap-5 md:grid-cols-2">
+            <article class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+              <h2 class="text-xl font-semibold text-ink">📝 Smart Notepad</h2>
+              <p class="mt-1 text-sm text-smoke">Kısa hedeflerini yaz. Notlarını klasörlere ayırıp yerel olarak sakla.</p>
+              <div class="mt-4 grid gap-3 md:grid-cols-2">
+                <div>
+                  <label class="block text-sm font-semibold text-smoke">Klasör seç</label>
+                  <select id="notes-folder-select" class="mt-2 w-full rounded-xl border border-black/20 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-[#8c6a43]"></select>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-smoke">Yeni klasör</label>
+                  <div class="mt-2 flex gap-2">
+                    <input id="notes-folder-create-input" type="text" class="w-full rounded-xl border border-black/20 bg-white px-3 py-2 text-sm text-ink outline-none focus:border-[#8c6a43]" placeholder="Örn: Meslek Araştırmaları" />
+                    <button id="create-notes-folder-btn" type="button" class="rounded-xl border border-black/25 bg-[#1f1f1f] px-3 py-2 text-sm font-semibold text-[#faf0e6] transition hover:opacity-90">Oluştur</button>
+                  </div>
+                </div>
+              </div>
+              <textarea id="notes-input" class="mt-4 min-h-36 w-full rounded-xl border border-black/20 bg-white p-3 text-sm text-ink outline-none focus:border-[#8c6a43]" placeholder="Notlarını buraya yaz..."></textarea>
+              <div class="mt-3 flex items-center justify-between">
+                <span id="notes-status" class="text-xs text-smoke"></span>
+                <button id="save-notes-btn" type="button" class="rounded-lg border border-black/25 bg-[#1f1f1f] px-4 py-2 text-sm font-semibold text-[#faf0e6] transition hover:opacity-90">Notları Kaydet</button>
+              </div>
+            </article>
+
+            <article class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+              <h2 class="text-xl font-semibold text-ink">📅 Önemli Hatırlatıcılar</h2>
+              <ul class="mt-3 space-y-2 text-sm text-smoke">
+                <li class="rounded-lg border border-black/10 bg-white px-3 py-2"><strong>MSÜ:</strong> 23 Şubat 2026</li>
+                <li class="rounded-lg border border-black/10 bg-white px-3 py-2"><strong>TYT:</strong> 21 Haziran 2026</li>
+                <li class="rounded-lg border border-black/10 bg-white px-3 py-2"><strong>AYT:</strong> 22 Haziran 2026</li>
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <!-- TEST SCREEN -->
+        <section id="test-screen" class="screen-panel hidden space-y-8">
+          <header class="space-y-4">
+            <div class="flex items-center justify-between text-sm text-smoke">
+              <span id="question-counter">Soru 1/12</span>
+              <span id="progress-percent">%0</span>
+            </div>
+            <div class="h-3 w-full overflow-hidden rounded-full bg-black/10">
+              <div id="progress-fill" class="h-full w-0 rounded-full bg-[#8c6a43] transition-all duration-300"></div>
+            </div>
+          </header>
+          <article class="rounded-2xl border border-black/15 bg-[#fffaf2] p-6">
+            <h2 id="question-text" class="text-xl font-semibold leading-relaxed text-ink md:text-2xl"></h2>
+            <div id="options-container" class="mt-6 grid gap-3"></div>
+          </article>
+          <div class="flex items-center justify-end">
+            <button id="next-btn" type="button" disabled class="rounded-xl bg-black/20 px-6 py-3 font-semibold text-black/60 transition disabled:cursor-not-allowed disabled:opacity-60">Sonraki</button>
+          </div>
+        </section>
+
+        <!-- LOADING SCREEN -->
+        <section id="loading-screen" class="screen-panel hidden text-center">
+          <div class="mx-auto max-w-2xl rounded-2xl border border-black/15 bg-[#fffaf2] px-6 py-12">
+            <p class="text-sm uppercase tracking-[0.3em] text-bronze">AI Destekli Kariyer Deneyimi</p>
+            <h2 class="mt-4 text-3xl font-semibold text-ink">🤖 AI Geleceğini İnşa Ediyor...</h2>
+            <p class="mt-3 text-sm text-smoke">Cevapların analiz ediliyor ve sana özel kariyer kartları hazırlanıyor.</p>
+            <div class="mt-8 h-2 w-full overflow-hidden rounded-full bg-black/10">
+              <div class="loading-bar h-full w-1/2 rounded-full bg-[#8c6a43]"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- RESULTS SCREEN -->
+        <section id="results-screen" class="screen-panel hidden space-y-6">
+          <div class="text-center">
+            <p class="text-sm uppercase tracking-[0.35em] text-bronze">AI Powered Career Recommendations</p>
+            <h2 class="mt-2 text-3xl font-semibold text-ink md:text-4xl">🎯 Sana Özel 3 Kariyer Rotası</h2>
+          </div>
+          <div id="results-container" class="grid gap-4 md:grid-cols-3"></div>
+
+          <!-- YOUTUBE VLOGS -->
+          <div class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+            <h3 class="text-xl font-semibold text-ink mb-2">📺 Mesleği Yerinde Gör: Vloglar</h3>
+            <p class="text-sm text-smoke mb-3">Seçtiğin meslekte çalışanların günlük rutinlerini izle, gerçek deneyimleri keşfet.</p>
+            <div id="youtube-vlogs" class="grid gap-3">
+              <div class="text-center py-4 text-smoke">Bir meslek seçtiğinde burada ilgili vloglar görünecek.</div>
+            </div>
+          </div>
+
+          <!-- BAŞARI HİKAYELERİ -->
+          <div class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+            <h3 class="text-xl font-semibold text-ink mb-2">🌟 İlham Veren Kariyer Yolculukları</h3>
+            <p class="text-sm text-smoke mb-3">Bu alan için LinkedIn keşfi ve hemen altında tarihten ilham veren 1 Türk, 1 yabancı isim gösterilir.</p>
+            <div id="success-stories" class="grid gap-3 md:grid-cols-3">
+              <div class="text-center py-4 text-smoke col-span-3">Bir meslek seçtiğinde burada LinkedIn keşif kartı görünecek.</div>
+            </div>
+          </div>
+
+          <!-- AI CHAT SECTION -->
+          <div class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+            <h3 class="text-xl font-semibold text-ink mb-3">💬 AI Kariyer Mentorun</h3>
+            <p class="text-sm text-smoke mb-3">Seçtiğin meslek hakkında tek tek soru sor. Bu alan n8n webhook üzerinden çalışan AI mentor akışıyla cevap verir.</p>
+            <div class="mb-3 rounded-xl border border-black/10 bg-white p-3">
+              <label for="mentor-webhook-input" class="block text-xs font-semibold text-smoke">n8n Webhook Adresi</label>
+              <div class="mt-2 flex flex-col gap-2 md:flex-row">
+                <input type="text" id="mentor-webhook-input" class="flex-1 rounded-xl border border-black/20 bg-white px-4 py-2 text-sm text-ink outline-none focus:border-[#8c6a43]" placeholder="https://.../webhook/..." />
+                <button id="save-mentor-webhook-btn" class="rounded-xl border border-black/25 bg-[#1f1f1f] px-4 py-2 text-sm font-semibold text-[#faf0e6] transition hover:opacity-90">Kaydet</button>
+                <button id="reset-mentor-webhook-btn" class="rounded-xl border border-black/20 bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:bg-[#f7f1e6]">Sıfırla</button>
+              </div>
+              <p id="mentor-webhook-status" class="mt-2 text-xs text-smoke">Bu alan webhook adresiyle hazır gelir. Sadece değiştirmek istersen yeni adres girip kaydetmen yeterlidir.</p>
+            </div>
+            <div id="chat-messages" class="chat-container mb-3 space-y-2 min-h-[320px] max-h-[380px] overflow-y-auto border border-black/10 rounded-xl bg-white p-3"></div>
+            <div class="flex gap-2 mt-2">
+              <input type="text" id="chat-input" class="flex-1 rounded-xl border border-black/20 bg-white px-4 py-2 text-sm text-ink outline-none focus:border-[#8c6a43]" placeholder="Mentor sorunu yaz... (Örn: Bu alanda nasıl öne çıkarım?)" />
+              <button id="chat-send-btn" class="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90">Gönder</button>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-3">
+              <button class="suggestion-btn text-xs px-3 py-1 rounded-full border border-black/20 bg-white hover:bg-[#f7f1e6] transition">💰 Maaşlar nasıl?</button>
+              <button class="suggestion-btn text-xs px-3 py-1 rounded-full border border-black/20 bg-white hover:bg-[#f7f1e6] transition">🌍 Yurt dışı imkanı var mı?</button>
+              <button class="suggestion-btn text-xs px-3 py-1 rounded-full border border-black/20 bg-white hover:bg-[#f7f1e6] transition">📚 Hangi derslere çalışmalıyım?</button>
+              <button class="suggestion-btn text-xs px-3 py-1 rounded-full border border-black/20 bg-white hover:bg-[#f7f1e6] transition">😟 Pişman olur muyum?</button>
+              <button class="suggestion-btn text-xs px-3 py-1 rounded-full border border-black/20 bg-white hover:bg-[#f7f1e6] transition">🤖 AI bu mesleği yok eder mi?</button>
+            </div>
+          </div>
+
+          <div class="mt-4 grid gap-4 md:grid-cols-2">
+            <section class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+              <h3 class="text-xl font-semibold text-ink">🎯 Gelecek Vizyon Kartı</h3>
+              <p class="mt-1 text-sm text-smoke">Seçilen meslek ve AI analizi</p>
+              <div id="vision-board-preview" class="mt-4 rounded-2xl border border-black/15 bg-white p-4"></div>
+              <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+                <button id="download-vision-pdf-btn" type="button" class="rounded-xl border border-black/25 bg-[#1f1f1f] px-4 py-2 text-sm font-semibold text-[#faf0e6] transition hover:opacity-90">📄 PDF Rapor İndir</button>
+                <button id="generate-ai-image-btn" type="button" class="rounded-xl border border-black/25 bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:bg-[#f7f1e6]">🎨 AI Görsel Promptu Al</button>
+              </div>
+            </section>
+
+            <section class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+              <h3 class="text-xl font-semibold text-ink">📊 RIASEC Kişilik Profilin</h3>
+              <div id="riasec-chart-container" class="mt-4">
+                <canvas id="riasec-chart" width="400" height="300"></canvas>
+              </div>
+              <p id="riasec-insight" class="mt-3 text-xs text-smoke italic"></p>
+            </section>
+          </div>
+
+          <!-- KRİZ SİMÜLATÖRÜ -->
+          <div class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
+            <h3 class="text-xl font-semibold text-ink mb-2">⚠️ Kriz Simülatörü</h3>
+            <p class="text-sm text-smoke mb-3">Her meslek için 3 mini kriz senaryosu açılır. Birine tıklayınca prompt hazırlanır; kendi Gemini hesabında aynı senaryoyu derinleştirerek devam edebilirsin.</p>
+            <div class="mb-3 rounded-xl border border-black/10 bg-[#fff8ee] p-3 text-sm text-smoke">
+              <strong class="text-ink">Yeni özellik:</strong> Buradaki amaç tek cümlelik yorum almak değil, gerçek bir AI sohbetinde senaryoyu adım adım tartışabilmen.
+            </div>
+            <div id="simulation-area" class="bg-white rounded-xl border border-black/10 p-4 min-h-[150px]">
+              <p id="simulation-text" class="whitespace-pre-line text-sm text-smoke">Bir meslek seçtiğinde burada üzerine tıklanabilen 3 kriz senaryosu görünecek.</p>
+              <div id="simulation-cards" class="mt-4 grid gap-3 md:grid-cols-3"></div>
+              <div id="simulation-prompt-panel" class="mt-4 hidden rounded-xl border border-black/10 bg-[#fffdf8] p-4">
+                <p class="text-sm font-semibold text-ink">Gemini'de Devam Et</p>
+                <p id="simulation-selected-title" class="mt-1 text-sm text-bronze"></p>
+                <textarea id="simulation-prompt-output" class="mt-3 min-h-[180px] w-full rounded-xl border border-black/15 bg-white px-4 py-3 text-sm text-ink outline-none focus:border-[#8c6a43]" readonly></textarea>
+                <div class="mt-3 flex flex-wrap gap-2">
+                  <button id="open-gemini-case-btn" class="rounded-xl bg-black px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90">🚀 Gemini'de Aç</button>
+                  <button id="copy-gemini-case-btn" class="rounded-xl border border-black/25 bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:bg-[#f7f1e6]">📋 Promptu Kopyala</button>
+                </div>
+                <p id="simulation-feedback" class="mt-3 text-xs text-smoke">Promptu kopyalayınca Gemini sekmesinde yapıştırıp konuşmaya devam edebilirsin.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-center gap-3">
+            <button id="restart-btn" type="button" class="rounded-xl border border-black/30 px-6 py-3 font-semibold text-ink transition hover:bg-[#f7f1e6]">🏠 Dashboard'a Dön</button>
+            <button id="share-results-btn" type="button" class="rounded-xl bg-bronze px-6 py-3 font-semibold text-white transition hover:opacity-90">📤 Sonuçları Paylaş</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- REHBERLİK NOTLARI MODAL - GÜNCELLENDİ -->
+    <div id="vision-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/25 p-4">
+      <div class="w-full max-w-2xl rounded-2xl border border-black/20 bg-[#fffdf8] p-6 shadow-oldmoney max-h-[90vh] overflow-y-auto">
+        <div class="flex items-start justify-between gap-3">
+          <h3 class="text-2xl font-semibold text-ink">📚 Meslek Seçim Rehberi</h3>
+          <button id="close-vision-btn" type="button" class="rounded-md border border-black/20 px-3 py-1 text-sm text-smoke">Kapat</button>
+        </div>
+        
+        <div class="mt-4 space-y-3">
+          <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
+            <p class="font-semibold text-ink">1. 🎯 Kendini Tanı</p>
+            <p class="text-sm text-smoke mt-1">Meslek seçimi, yeteneklerin, ilgi alanların ve değerlerinle uyumlu olmalı. RIASEC testi bu konuda sana rehberlik eder.</p>
+          </div>
+          <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
+            <p class="font-semibold text-ink">2. 🔍 Detaylı Araştırma Yap</p>
+            <p class="text-sm text-smoke mt-1">Mesleği araştırırken şu kaynakları kullan:<br>
+            • <strong>YouTube</strong>: "day in the life [meslek adı]" aratarak gerçek çalışanların günlük rutinlerini izle<br>
+            • <strong>LinkedIn</strong>: Meslek adıyla arama yap, o alanda çalışan kişilerin profillerini incele, onlara soru sor<br>
+            • <strong>Instagram</strong>: #meslekadı etiketiyle gerçek paylaşımları gör<br>
+            • <strong>Kariyer.net / Indeed</strong>: İş ilanlarını incele, hangi yetenekler aranıyor gör</p>
+          </div>
+          <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
+            <p class="font-semibold text-ink">3. 👥 Deneyimlerden Öğren</p>
+            <p class="text-sm text-smoke mt-1">O meslekte çalışan insanlarla konuş, onların yolculuklarından ilham al. LinkedIn'de "Meslek adı + mentor" araması yapabilirsin.</p>
+          </div>
+          <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
+            <p class="font-semibold text-ink">4. 📈 Geleceği Düşün</p>
+            <p class="text-sm text-smoke mt-1">Seçtiğin mesleğin 10 yıl sonraki durumu ne olacak? Yapay zeka bu mesleği nasıl etkileyecek? Bu soruları AI mentoruna sorabilirsin.</p>
+          </div>
+          <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
+            <p class="font-semibold text-ink">5. 🎓 Eğitim Planı Yap</p>
+            <p class="text-sm text-smoke mt-1">Hangi üniversiteler, hangi bölümler? Hangi sertifikalar seni öne çıkarır? Bunları önceden planla. Üniversitelerin kariyer günlerine katıl.</p>
+          </div>
+          <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
+            <p class="font-semibold text-ink">6. ⚡ Esnek Ol</p>
+            <p class="text-sm text-smoke mt-1">Kariyer yolculuğunda değişime açık ol. İlgi alanların zamanla değişebilir, bu çok normal. Sürekli öğrenmeye devam et.</p>
+          </div>
+        </div>
+        <p class="mt-4 text-sm italic text-[#5b4631] border-t border-black/10 pt-3">💡 Unutma: Doğru meslek, seni her sabah motive ederek uyandırandır. AI mentorun her zaman yanında!</p>
+      </div>
+    </div>
+
+    <div id="portrait-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/25 p-4">
+      <div class="w-full max-w-3xl rounded-2xl border border-black/20 bg-[#fffdf8] p-6 shadow-oldmoney">
+        <div class="flex items-start justify-between gap-3">
+          <h3 class="text-2xl font-semibold text-ink">🎨 AI Gorsel Promptu</h3>
+          <button id="close-portrait-btn" type="button" class="rounded-md border border-black/20 px-3 py-1 text-sm text-smoke">Kapat</button>
+        </div>
+        <p id="portrait-subtitle" class="mt-2 text-sm text-smoke"></p>
+        <div class="mt-4 space-y-3">
+          <div id="portrait-loading" class="hidden text-sm text-smoke">🎨 Prompt hazırlanıyor...</div>
+          <textarea id="portrait-prompt-output" class="min-h-[180px] w-full rounded-xl border border-black/15 bg-white p-4 text-sm text-ink outline-none focus:border-[#8c6a43]" readonly placeholder="Burada AI görsel promptu görünecek."></textarea>
+          <div class="flex flex-wrap gap-2">
+            <button id="copy-portrait-prompt-btn" type="button" class="rounded-xl border border-black/25 bg-[#1f1f1f] px-4 py-2 text-sm font-semibold text-[#faf0e6] transition hover:opacity-90">📋 Promptu Kopyala</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DRAWER -->
+    <button id="drawer-open-btn" type="button" class="fixed right-6 top-6 z-40 rounded-2xl border border-black/15 bg-[#fffaf2] px-4 py-2 text-sm font-semibold text-ink shadow-oldmoney hover:bg-[#f7f1e6] transition">📅 Takvim & Notlar</button>
+    <aside id="notes-drawer" class="fixed right-0 top-0 z-50 hidden h-full w-full max-w-md bg-panelIvory border-l border-black/15 shadow-oldmoney">
+      <div class="h-full overflow-y-auto p-5">
+        <div class="flex items-start justify-between gap-3">
+          <h3 class="text-2xl font-semibold text-ink">📅 Takvim & Notlar</h3>
+          <button id="drawer-close-btn" type="button" class="rounded-md border border-black/20 px-3 py-1 text-sm text-smoke">Kapat</button>
+        </div>
+        <div class="mt-4 rounded-2xl border border-black/15 bg-[#fffaf2] p-4">
+          <h4 class="text-lg font-semibold text-ink">📌 Önemli Tarihler</h4>
+          <ul class="mt-3 space-y-2 text-sm text-smoke">
+            <li><strong>MSÜ:</strong> 23 Şubat 2026</li>
+            <li><strong>TYT:</strong> 21 Haziran 2026</li>
+            <li><strong>AYT:</strong> 22 Haziran 2026</li>
+          </ul>
+        </div>
+        <div class="mt-4 rounded-2xl border border-black/15 bg-[#fffaf2] p-4">
+          <h4 class="text-lg font-semibold text-ink">📁 Not Klasörlerin</h4>
+          <ul id="drawer-folders-list" class="mt-3 space-y-3 text-sm text-smoke"></ul>
+        </div>
+        <div class="mt-4 rounded-2xl border border-black/15 bg-[#fffaf2] p-4">
+          <h4 class="text-lg font-semibold text-ink">✍️ Aktif Not</h4>
+          <p id="drawer-active-note" class="mt-2 text-sm text-smoke bg-white p-2 rounded border border-black/10">Henüz not seçilmedi</p>
+        </div>
+      </div>
+    </aside>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="questions-data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

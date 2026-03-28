@@ -1,0 +1,173 @@
+{
+  "name": "BEWARE JOBS Gemini Mentor Chat",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "beware-jobs-gemini-chat",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook_chat",
+      "name": "Chat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "user_name",
+              "name": "user_name",
+              "value": "={{$json.body.userName || 'Ogrenci'}}",
+              "type": "string"
+            },
+            {
+              "id": "selected_career",
+              "name": "selected_career",
+              "value": "={{$json.body.selectedCareer || 'Henuz secilmedi'}}",
+              "type": "string"
+            },
+            {
+              "id": "message",
+              "name": "message",
+              "value": "={{$json.body.message || ''}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set_chat_payload",
+      "name": "Prepare Chat Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "key",
+              "value": "GEMINI_API_KEY_BURAYA"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ systemInstruction: { parts: [{ text: 'Sen lise ogrencileriyle konusan sicak, akici ve dogrudan bir kariyer mentorsun. Her zaman Turkce cevap ver. Soruyu tam cevapla. Gereksiz genel tavsiye verme. En fazla 6 cumle yaz.' }] }, contents: [{ role: 'user', parts: [{ text: `Kullanici: ${$json.user_name}\\nSecili meslek: ${$json.selected_career}\\nSoru: ${$json.message}` }] }] }) }}",
+        "options": {}
+      },
+      "id": "gemini_chat_request",
+      "name": "Gemini Chat Request",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        780,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parts = $json.candidates?.[0]?.content?.parts || [];\nconst reply = parts.filter((part) => typeof part.text === 'string').map((part) => part.text).join('\\n').trim();\nreturn [{ json: { reply: reply || 'Gemini bos cevap dondu.' } }];"
+      },
+      "id": "parse_chat_response",
+      "name": "Parse Chat Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$json}}",
+        "options": {}
+      },
+      "id": "respond_chat",
+      "name": "Return Chat Reply",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare Chat Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Chat Payload": {
+      "main": [
+        [
+          {
+            "node": "Gemini Chat Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Chat Request": {
+      "main": [
+        [
+          {
+            "node": "Parse Chat Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Chat Response": {
+      "main": [
+        [
+          {
+            "node": "Return Chat Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "beware-jobs-gemini-chat-v1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
+}

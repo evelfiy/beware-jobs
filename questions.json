@@ -1,0 +1,156 @@
+{
+  "mainQuestions": [
+    {
+      "id": "q1",
+      "text": "Okulda bir proje günü var. En çok hangi görev seni heyecanlandırır?",
+      "options": [
+        { "text": "Robot ya da model tasarlamak", "scores": { "R": 2, "I": 1 } },
+        { "text": "Veri toplayıp neden-sonuç analizi yapmak", "scores": { "I": 2, "C": 1 } },
+        { "text": "Sunum tasarlayıp yaratıcı anlatım yapmak", "scores": { "A": 2, "E": 1 } },
+        { "text": "Takımı organize edip görev dağıtmak", "scores": { "E": 2, "S": 1 } }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Boş bir cumartesi gününü nasıl değerlendirmek istersin?",
+      "options": [
+        { "text": "Atölyede bir şeyler üretmek/onarım yapmak", "scores": { "R": 2 } },
+        { "text": "Bilim belgeseli izleyip not almak", "scores": { "I": 2 } },
+        { "text": "Müzik, çizim veya içerik üretimi yapmak", "scores": { "A": 2 } },
+        { "text": "Arkadaşlarımla bir sosyal soruna çözüm etkinliği yapmak", "scores": { "S": 2 } }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Bir konuda zorlanan arkadaşın senden ne beklerse en iyi hissedersin?",
+      "options": [
+        { "text": "Sorunu parçalara ayırıp teknik çözüm bulmamı", "scores": { "I": 2, "R": 1 } },
+        { "text": "Onu motive edip birlikte çalışma planı yapmamı", "scores": { "S": 2, "E": 1 } },
+        { "text": "Düzenli bir çalışma takvimi ve kontrol listesi oluşturmamı", "scores": { "C": 2 } },
+        { "text": "Daha yaratıcı bir öğrenme yöntemi önermemi", "scores": { "A": 2, "S": 1 } }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Bir mobil uygulama geliştirme kulübündesin. Hangi rolü seçersin?",
+      "options": [
+        { "text": "Teknik geliştirme ve test", "scores": { "R": 1, "I": 2 } },
+        { "text": "Kullanıcı davranışı araştırması", "scores": { "I": 2, "S": 1 } },
+        { "text": "Arayüz tasarımı ve marka dili", "scores": { "A": 2, "E": 1 } },
+        { "text": "Takvim, bütçe ve dokümantasyon", "scores": { "C": 2, "E": 1 } }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Seni en çok hangi öğrenme biçimi geliştiriyor?",
+      "options": [
+        { "text": "Yaparak-yaşayarak öğrenme", "scores": { "R": 2 } },
+        { "text": "Deney, araştırma ve hipotez kurma", "scores": { "I": 2 } },
+        { "text": "Hikayeleştirme ve görselleştirme", "scores": { "A": 2 } },
+        { "text": "Sistemli plan ve tekrar", "scores": { "C": 2 } }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Bir etkinlikte ekip içinde hangi durum sana doğal gelir?",
+      "options": [
+        { "text": "Sahada aktif olup operasyonu yürütmek", "scores": { "R": 2, "E": 1 } },
+        { "text": "Verileri kontrol edip strateji önermek", "scores": { "I": 2, "C": 1 } },
+        { "text": "Sunumu etkileyici hale getirmek", "scores": { "A": 2, "E": 1 } },
+        { "text": "İnsanları bir araya getirip iletişimi yönetmek", "scores": { "S": 2, "E": 1 } }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Gelecekte hangi çalışma ortamı seni daha çok mutlu eder?",
+      "options": [
+        { "text": "Laboratuvar, atölye, sahada uygulama alanları", "scores": { "R": 2, "I": 1 } },
+        { "text": "Araştırma merkezi ve analiz odaklı ekipler", "scores": { "I": 2 } },
+        { "text": "Stüdyo, medya ve yaratıcı ekipler", "scores": { "A": 2 } },
+        { "text": "Düzenli süreçlerin olduğu kurumsal yapı", "scores": { "C": 2, "E": 1 } }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Hangisi seni daha çok motive eder?",
+      "options": [
+        { "text": "Somut bir ürün ortaya çıkarmak", "scores": { "R": 2 } },
+        { "text": "Yeni bir bilgi keşfetmek", "scores": { "I": 2 } },
+        { "text": "İnsanları etkileyecek bir içerik üretmek", "scores": { "A": 2, "E": 1 } },
+        { "text": "Birine doğrudan fayda sağlamak", "scores": { "S": 2 } }
+      ]
+    },
+    {
+      "id": "q9",
+      "text": "Sınıfta bir kriz çıktı. İlk refleksin ne olur?",
+      "options": [
+        { "text": "Hızlıca pratik çözüm üretirim", "scores": { "R": 2, "E": 1 } },
+        { "text": "Nedenini analiz edip kalıcı çözüm ararım", "scores": { "I": 2, "C": 1 } },
+        { "text": "Ortamı yumuşatacak yaratıcı bir yaklaşım bulurum", "scores": { "A": 2, "S": 1 } },
+        { "text": "İnsanları sakinleştirip koordinasyonu sağlarım", "scores": { "S": 2, "E": 1 } }
+      ]
+    },
+    {
+      "id": "q10",
+      "text": "Bir yarışmaya katılsan hangi kategoriye yönelirsin?",
+      "options": [
+        { "text": "Teknoloji/prototip geliştirme", "scores": { "R": 2, "I": 1 } },
+        { "text": "Bilimsel araştırma", "scores": { "I": 2 } },
+        { "text": "Tasarım, medya veya sanat", "scores": { "A": 2 } },
+        { "text": "Sosyal girişimcilik ve liderlik", "scores": { "E": 2, "S": 1 } }
+      ]
+    },
+    {
+      "id": "q11",
+      "text": "Ders çalışırken hangisi seni en iyi temsil eder?",
+      "options": [
+        { "text": "Uygulama yapmadan içim rahat etmez", "scores": { "R": 2 } },
+        { "text": "Konuya dair ekstra kaynak araştırırım", "scores": { "I": 2 } },
+        { "text": "Notları renkli ve yaratıcı şekilde düzenlerim", "scores": { "A": 2 } },
+        { "text": "Program oluşturup plana sadık kalırım", "scores": { "C": 2 } }
+      ]
+    },
+    {
+      "id": "q12",
+      "text": "10 yıl sonrası için seni en çok heyecanlandıran başarı hangisi?",
+      "options": [
+        { "text": "Gerçek bir problemi çözen ürün geliştirmek", "scores": { "R": 2, "I": 1 } },
+        { "text": "Alanımda uzmanlaşıp yeni bilgi üretmek", "scores": { "I": 2 } },
+        { "text": "İnsanların ilham aldığı özgün işler üretmek", "scores": { "A": 2, "E": 1 } },
+        { "text": "Ekip yönetip topluma etkili projeler yapmak", "scores": { "E": 2, "S": 1 } }
+      ]
+    }
+  ],
+  "backupQuestions": [
+    {
+      "id": "b1",
+      "text": "Skorların birbirine yakın. Kararı netleştirelim: Bir staj hakkın var, hangisini seçersin?",
+      "options": [
+        { "text": "Teknik saha/üretim ortamı", "scores": { "R": 2 } },
+        { "text": "Araştırma-analiz ekibi", "scores": { "I": 2 } },
+        { "text": "Yaratıcı içerik/tasarım stüdyosu", "scores": { "A": 2 } },
+        { "text": "İnsan odaklı danışmanlık/rehberlik ortamı", "scores": { "S": 2 } }
+      ]
+    },
+    {
+      "id": "b2",
+      "text": "Bir okul kulübünü sıfırdan kuracaksın. Önceliğin ne olur?",
+      "options": [
+        { "text": "Atölye ekipmanları ve uygulamalı üretim", "scores": { "R": 2 } },
+        { "text": "Araştırma konusu ve veri metodolojisi", "scores": { "I": 2 } },
+        { "text": "Kulübün kimliği ve yaratıcı içerikleri", "scores": { "A": 2 } },
+        { "text": "Planlama, görev şeması ve süreç takibi", "scores": { "C": 2 } }
+      ]
+    },
+    {
+      "id": "b3",
+      "text": "Ekibin seni tek bir rolde görmek istiyor. Hangisini seçersin?",
+      "options": [
+        { "text": "Operasyon ve uygulama lideri", "scores": { "R": 1, "E": 1 } },
+        { "text": "Analiz ve strateji uzmanı", "scores": { "I": 1, "C": 1 } },
+        { "text": "Yaratıcı yönetmen", "scores": { "A": 1, "E": 1 } },
+        { "text": "İletişim ve takım koçu", "scores": { "S": 1, "E": 1 } }
+      ]
+    }
+  ]
+}

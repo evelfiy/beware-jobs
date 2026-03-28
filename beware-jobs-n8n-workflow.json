@@ -1,0 +1,229 @@
+{
+  "name": "BEWARE JOBS Career Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "beware-jobs-career-report",
+        "httpMethod": "POST",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "webhook_node",
+      "name": "Career Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        260,
+        280
+      ],
+      "webhookId": "beware-jobs-career-report"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "student_name",
+              "name": "student_name",
+              "value": "={{$json.body.student_name || 'Öğrenci'}}",
+              "type": "string"
+            },
+            {
+              "id": "selected_career",
+              "name": "selected_career",
+              "value": "={{$json.body.selected_career || 'Belirtilmedi'}}",
+              "type": "string"
+            },
+            {
+              "id": "riasec_scores",
+              "name": "riasec_scores",
+              "value": "={{JSON.stringify($json.body.riasec_scores || {}, null, 2)}}",
+              "type": "string"
+            },
+            {
+              "id": "student_note",
+              "name": "student_note",
+              "value": "={{$json.body.student_note || 'Not paylaşılmadı.'}}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{$json.body.email || ''}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "edit_fields_node",
+      "name": "Prepare Payload",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        500,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={{$env.GEMINI_API_KEY}}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"systemInstruction\": {\n    \"parts\": [\n      {\n        \"text\": \"Sen bir kariyer mentorusun. Gelen ogrenci verilerini analiz et ve net, sicak, motive edici bir rapor hazirla. Turkce yaz.\"\n      }\n    ]\n  },\n  \"contents\": [\n    {\n      \"role\": \"user\",\n      \"parts\": [\n        {\n          \"text\": \"Ogrenci adi: {{$json.student_name}}\\nSecilen meslek: {{$json.selected_career}}\\nRIASEC skorlari: {{$json.riasec_scores}}\\nOgrenci notu: {{$json.student_note}}\\n\\nAsagidaki formatta cevap ver:\\n1. Bu meslegin ogrenciye neden uygun oldugu\\n2. Gelistirmesi gereken 3 alan\\n3. 30 gunluk mini aksiyon plani\\n4. Motivasyon cumlesi\"\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "gemini_request_node",
+      "name": "Gemini Career Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        760,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const parts = $json.candidates?.[0]?.content?.parts || [];\nconst text = parts.filter(part => part.text).map(part => part.text).join('\\n').trim();\nreturn [{ json: { report: text || 'Rapor üretilemedi.', email: $input.first().json.email, student_name: $input.first().json.student_name, selected_career: $input.first().json.selected_career } }];"
+      },
+      "id": "parse_response_node",
+      "name": "Parse Gemini Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "email_exists",
+              "leftValue": "={{$json.email}}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if_email_node",
+      "name": "Email Var mı?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1260,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"student_name\": \"{{$json.student_name}}\",\n  \"selected_career\": \"{{$json.selected_career}}\",\n  \"report\": \"{{$json.report}}\",\n  \"email_status\": \"Mail adimi baglanirsa otomatik gonderilebilir.\"\n}",
+        "options": {}
+      },
+      "id": "respond_node",
+      "name": "Return Analysis",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1500,
+        280
+      ]
+    }
+  ],
+  "connections": {
+    "Career Webhook": {
+      "main": [
+        [
+          {
+            "node": "Prepare Payload",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Payload": {
+      "main": [
+        [
+          {
+            "node": "Gemini Career Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gemini Career Analysis": {
+      "main": [
+        [
+          {
+            "node": "Parse Gemini Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Gemini Response": {
+      "main": [
+        [
+          {
+            "node": "Email Var mı?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Var mı?": {
+      "main": [
+        [
+          {
+            "node": "Return Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {},
+  "versionId": "beware-jobs-n8n-v1",
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "id": "beware-jobs-n8n"
+}
