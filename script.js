@@ -985,10 +985,9 @@ async function downloadPDF() {
   const topType = Object.entries(appState.scores).sort((a, b) => b[1] - a[1])[0];
   const reasonText = career.reason || "Kişilik özelliklerin ve ilgi alanların bu meslekle güçlü bir uyum gösteriyor.";
   const researchGuide = [
-    "LinkedIn'de bu meslekte çalışan kişilerin profillerini incele ve kariyer yolculuklarına bak.",
-    "YouTube'da bu meslek için vlog, bir günüm veya day in the life videoları izle.",
-    "Üniversite bölümlerini, ders planlarını ve mezunların nerelerde çalıştığını araştır.",
-    "Bu alan için hangi sertifikaların, projelerin veya stajların avantaj sağladığını not al."
+    "LinkedIn ve YouTube'da bu alanda çalışan kişilerin günlük hayatını incele.",
+    "Üniversite bölümleri, dersler ve gerekli beceriler hakkında kısa araştırma yap.",
+    "Bu alan için seni öne çıkaracak staj, proje veya sertifikaları not al."
   ];
   const summaryText = career.description || "Bu alan, güçlü ilgi ve becerilerinle birleşebilecek bir kariyer yolu sunar.";
   const traitMatchText = overlapTraits.length
@@ -1018,12 +1017,12 @@ async function downloadPDF() {
     </div>
 
     <div style="padding:28px 34px 20px 34px;">
-      <div style="font-size:34px;font-weight:700;color:#8c6a43;line-height:1.2;">${career.title}</div>
-      <div style="font-size:14px;line-height:1.7;color:#5a534a;margin-top:12px;">
-        Bu özet, sana önerilen mesleği daha net görmen ve kendi düşüncelerini toparlaman için hazırlandı.
+      <div style="font-size:30px;font-weight:700;color:#8c6a43;line-height:1.2;">${career.title}</div>
+      <div style="font-size:13px;line-height:1.6;color:#5a534a;margin-top:10px;">
+        Sana özel kısa kariyer özeti
       </div>
 
-      <div style="display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;">
+      <div style="display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;">
         <div style="flex:1;min-width:150px;background:#fffaf2;border-radius:16px;padding:16px;">
           <div style="font-size:11px;font-weight:700;color:#8c6a43;text-transform:uppercase;letter-spacing:0.06em;">Maaş Aralığı</div>
           <div style="font-size:20px;font-weight:700;margin-top:8px;">${career.salaryRange || "Bilgi yok"}</div>
@@ -1038,60 +1037,41 @@ async function downloadPDF() {
         </div>
       </div>
 
-      <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:18px;">
-        <div style="font-size:18px;font-weight:700;">Mesleğe Kısa Bakış</div>
-        <div style="margin-top:10px;font-size:14px;line-height:1.8;color:#4d463d;">${summaryText}</div>
+      <div style="background:#fffaf2;border-radius:18px;padding:18px;margin-top:16px;">
+        <div style="font-size:17px;font-weight:700;">Mesleğe Kısa Bakış</div>
+        <div style="margin-top:8px;font-size:13px;line-height:1.7;color:#4d463d;">${summaryText}</div>
       </div>
 
-      <div style="margin-top:24px;">
-        <div style="font-size:20px;font-weight:700;">Bu Meslek Neden Sana Önerildi?</div>
-        <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${reasonText}</div>
+      <div style="margin-top:20px;">
+        <div style="font-size:18px;font-weight:700;">Neden Sana Önerildi?</div>
+        <div style="margin-top:8px;font-size:13px;line-height:1.75;color:#4d463d;">${reasonText}</div>
       </div>
 
-      <div style="display:flex;gap:14px;margin-top:20px;align-items:stretch;">
+      <div style="display:flex;gap:12px;margin-top:16px;align-items:stretch;">
         <div style="flex:1;background:#fffaf2;border-radius:18px;padding:18px;">
-          <div style="font-size:17px;font-weight:700;">Sende Uyuşan Yönler</div>
-          <div style="margin-top:10px;font-size:13px;line-height:1.8;color:#4d463d;">${traitMatchText}</div>
+          <div style="font-size:16px;font-weight:700;">Sende Uyuşan Yönler</div>
+          <div style="margin-top:8px;font-size:12px;line-height:1.7;color:#4d463d;">${traitMatchText}</div>
         </div>
         <div style="flex:1;background:#fffaf2;border-radius:18px;padding:18px;">
-          <div style="font-size:17px;font-weight:700;">Bu Alanda Güçlü Olan Yönler</div>
-          <div style="margin-top:10px;font-size:13px;line-height:1.8;color:#4d463d;">${expectedTraitsText}</div>
+          <div style="font-size:16px;font-weight:700;">Bu Alanda Güçlü Olan Yönler</div>
+          <div style="margin-top:8px;font-size:12px;line-height:1.7;color:#4d463d;">${expectedTraitsText}</div>
         </div>
       </div>
 
-      <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:20px;">
-        <div style="font-size:18px;font-weight:700;">Gelecek Analizi</div>
-        <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${futureText}</div>
-      </div>
-    </div>
-
-    <div style="page-break-before:always;padding:26px 34px 34px 34px;background:#f8f3eb;">
-      <div style="height:8px;background:#8c6a43;border-radius:999px;margin-bottom:20px;"></div>
-      <div style="font-size:26px;font-weight:700;">Bir Sonraki Adım İçin</div>
-      <div style="margin-top:8px;font-size:14px;line-height:1.8;color:#5a534a;">
-        Aşağıdaki küçük adımlar, bu mesleği daha gerçekçi şekilde araştırmana yardımcı olur.
+      <div style="background:#fffaf2;border-radius:18px;padding:18px;margin-top:16px;">
+        <div style="font-size:17px;font-weight:700;">Gelecek Analizi</div>
+        <div style="margin-top:8px;font-size:12px;line-height:1.7;color:#4d463d;">${futureText}</div>
       </div>
 
-      <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px;">
+      <div style="background:#fffaf2;border-radius:18px;padding:18px;margin-top:16px;">
+        <div style="font-size:17px;font-weight:700;">Bir Sonraki Adım İçin</div>
+        <div style="margin-top:10px;display:flex;flex-direction:column;gap:8px;">
         ${researchGuide.map((item, index) => `
-          <div style="background:#ffffff;border-radius:16px;padding:16px 18px;">
-            <div style="font-size:15px;font-weight:700;color:#8c6a43;">${index + 1}. Adım</div>
-            <div style="margin-top:8px;font-size:14px;line-height:1.8;color:#4d463d;">${item}</div>
+          <div style="background:#ffffff;border-radius:14px;padding:12px 14px;">
+            <div style="font-size:13px;font-weight:700;color:#8c6a43;">${index + 1}. Adım</div>
+            <div style="margin-top:6px;font-size:12px;line-height:1.65;color:#4d463d;">${item}</div>
           </div>
         `).join("")}
-      </div>
-
-      <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:22px;">
-        <div style="font-size:18px;font-weight:700;">Kişilik Profili Özeti</div>
-        <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${profileText}</div>
-      </div>
-
-      <div style="margin-top:24px;">
-        <div style="font-size:22px;font-weight:700;">Benim Düşüncelerim ve Notlarım</div>
-        <div style="margin-top:8px;font-size:13px;line-height:1.7;color:#6b645a;">Bu alanla ilgili kendi düşüncelerini, soru işaretlerini veya araştırma notlarını buraya ekleyebilirsin.</div>
-        <div style="margin-top:16px;border:2px solid #d8cec0;border-radius:18px;padding:18px 18px 8px 18px;background:#fffdf9;">
-          ${Array.from({ length: 7 }).map(() => `<div style="height:30px;border-bottom:1px solid #d9d1c5;"></div>`).join("")}
-        </div>
       </div>
     </div>
   `;
