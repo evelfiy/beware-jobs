@@ -353,6 +353,31 @@ function normalizeText(text = "") {
     .replace(/ü/g, "u");
 }
 
+function normalizeAiDisplayText(text = "") {
+  return String(text)
+    .replace(/\*\*/g, "")
+    .replace(/�/g, "")
+    .replace(/Ã§/g, "ç")
+    .replace(/Ãœ/g, "Ü")
+    .replace(/Ã¼/g, "ü")
+    .replace(/Ã–/g, "Ö")
+    .replace(/Ã¶/g, "ö")
+    .replace(/ÄŸ/g, "ğ")
+    .replace(/Äž/g, "Ğ")
+    .replace(/ÅŸ/g, "ş")
+    .replace(/Åž/g, "Ş")
+    .replace(/Ä±/g, "ı")
+    .replace(/Ä°/g, "İ")
+    .replace(/Pi\uFFFDman/g, "Pişman")
+    .replace(/mesle\uFFFDi/g, "mesleği")
+    .replace(/de\uFFFDer/g, "değer")
+    .replace(/geli\uFFFDir/g, "geliştir")
+    .replace(/s\uFFFDrekli/g, "sürekli")
+    .replace(/do\uFFFDrudan/g, "doğrudan")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
 function buildFallbackCareerReply(message) {
   const careerData = getSelectedCareerData();
   const career = careerData?.title || "seçtiğin meslek";
@@ -783,7 +808,7 @@ async function sendChatMessage() {
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || data.message || "n8n workflow yanit vermedi.");
     typingDiv.remove();
-    const successReply = data.reply || data.message || "Mentor cevabı alınamadı.";
+    const successReply = normalizeAiDisplayText(data.reply || data.message || "Mentor cevabı alınamadı.");
     addChatMessageToUI(successReply, "bot");
     appState.chatHistory.push({ role: "user", content: message });
     appState.chatHistory.push({ role: "assistant", content: successReply });
