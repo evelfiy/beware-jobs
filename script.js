@@ -997,7 +997,7 @@ async function downloadPDF() {
   const expectedTraitsText = matchedTraits.length
     ? `Bu meslek özellikle şu özelliklerle güçlenir: ${matchedTraits.join(", ")}.`
     : "Bu alan için iletişim, sorumluluk ve öğrenme isteği önemli destekleyici özelliklerdir.";
-  const futureText = `${career.futureScoreExplanation || "Bu gelecek yüzdesi 10 kritere göre hesaplandı."} AI etkisi: ${career.aiRisk || "Bu alan değişerek devam edebilir."} Gelecek öngörüsü: ${career.futureOutlook || "Talep gören ve kendini geliştirdikçe güçlenebilecek bir alan."}`;
+  const futureText = `${career.futureScore}/100 gelecek skoru; değişime uyum, pazar talebi ve mesleğin gelecekteki dayanıklılığı dikkate alınarak oluşturuldu. ${career.futureOutlook || "Bu alan kendini geliştirdikçe güçlenebilecek bir meslek yolu sunuyor."}`;
   const profileText = `En baskın RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. İlk 3 yönün: ${topTraits.join(", ") || "Belirlenemedi"}. Bu kombinasyon, senin meslek seçiminde hangi ortamlarda daha rahat ve güçlü hissedebileceğine dair ipucu verir.`;
 
   const wrapper = document.createElement("div");
@@ -1010,7 +1010,7 @@ async function downloadPDF() {
   wrapper.innerHTML = `
     <div style="background:#1c1c1c;color:#faf0e6;padding:28px 34px 20px 34px;border-bottom:8px solid #8c6a43;">
       <div style="font-size:24px;font-weight:700;letter-spacing:0.04em;">BEWARE!: JOBS</div>
-      <div style="font-size:13px;margin-top:6px;opacity:0.9;">Profesyonel Kariyer Değerlendirme Dosyası</div>
+      <div style="font-size:13px;margin-top:6px;opacity:0.9;">Kişisel Kariyer Özeti</div>
       <div style="display:flex;justify-content:space-between;gap:16px;margin-top:18px;font-size:12px;opacity:0.9;">
         <span>Hazırlanan kişi: ${appState.userName || "Öğrenci"}</span>
         <span>Tarih: ${new Date().toLocaleDateString("tr-TR")}</span>
@@ -1020,7 +1020,7 @@ async function downloadPDF() {
     <div style="padding:28px 34px 20px 34px;">
       <div style="font-size:34px;font-weight:700;color:#8c6a43;line-height:1.2;">${career.title}</div>
       <div style="font-size:14px;line-height:1.7;color:#5a534a;margin-top:12px;">
-        Bu rapor, seçilen mesleğin neden öne çıktığını, gelecekteki potansiyelini ve bu alanı nasıl daha derin araştırabileceğini daha profesyonel bir düzende sunar.
+        Bu özet, sana önerilen mesleği daha net görmen ve kendi düşüncelerini toparlaman için hazırlandı.
       </div>
 
       <div style="display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;">
@@ -1067,9 +1067,9 @@ async function downloadPDF() {
 
     <div style="page-break-before:always;padding:26px 34px 34px 34px;background:#f8f3eb;">
       <div style="height:8px;background:#8c6a43;border-radius:999px;margin-bottom:20px;"></div>
-      <div style="font-size:26px;font-weight:700;">Bu Mesleği Daha Derin Araştırmak İçin</div>
+      <div style="font-size:26px;font-weight:700;">Bir Sonraki Adım İçin</div>
       <div style="margin-top:8px;font-size:14px;line-height:1.8;color:#5a534a;">
-        Aşağıdaki adımlar bu mesleği yüzeysel değil, daha bilinçli şekilde tanıman için hazırlandı.
+        Aşağıdaki küçük adımlar, bu mesleği daha gerçekçi şekilde araştırmana yardımcı olur.
       </div>
 
       <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px;">
@@ -1082,15 +1082,15 @@ async function downloadPDF() {
       </div>
 
       <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:22px;">
-        <div style="font-size:18px;font-weight:700;">Kişilik Profilin ve Meslek Uyumu</div>
+        <div style="font-size:18px;font-weight:700;">Kişilik Profili Özeti</div>
         <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${profileText}</div>
       </div>
 
       <div style="margin-top:24px;">
         <div style="font-size:22px;font-weight:700;">Benim Düşüncelerim ve Notlarım</div>
-        <div style="margin-top:8px;font-size:13px;line-height:1.7;color:#6b645a;">Bu alanla ilgili kendi fikirlerini, araştırma notlarını veya öğretmeninden aldığın önerileri buraya ekleyebilirsin.</div>
+        <div style="margin-top:8px;font-size:13px;line-height:1.7;color:#6b645a;">Bu alanla ilgili kendi düşüncelerini, soru işaretlerini veya araştırma notlarını buraya ekleyebilirsin.</div>
         <div style="margin-top:16px;border:2px solid #d8cec0;border-radius:18px;padding:18px 18px 8px 18px;background:#fffdf9;">
-          ${Array.from({ length: 8 }).map(() => `<div style="height:28px;border-bottom:1px solid #d9d1c5;"></div>`).join("")}
+          ${Array.from({ length: 7 }).map(() => `<div style="height:30px;border-bottom:1px solid #d9d1c5;"></div>`).join("")}
         </div>
       </div>
     </div>
