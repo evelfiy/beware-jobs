@@ -668,6 +668,13 @@ function showScreen(screenId) {
     document.getElementById(s + "-screen")?.classList.add("hidden");
   });
   document.getElementById(screenId + "-screen")?.classList.remove("hidden");
+
+  const introButton = document.getElementById("intro-open-btn");
+  const notesButton = document.getElementById("drawer-open-btn");
+  const shouldHideFloatingButtons = screenId === "results";
+
+  if (introButton) introButton.classList.toggle("hidden", shouldHideFloatingButtons);
+  if (notesButton) notesButton.classList.toggle("hidden", shouldHideFloatingButtons);
 }
 
 function onSaveName() {
@@ -960,7 +967,7 @@ async function generateAIImage() {
   ui.portraitModal.classList.remove("hidden");
   ui.portraitModal.classList.add("flex");
   ui.portraitLoading.classList.remove("hidden");
-  ui.portraitSubtitle.textContent = `${appState.selectedCareer.title} icin hazirlanmis promptu kopyalayip istedigin AI gorsel aracina yapistirabilirsin.`;
+  ui.portraitSubtitle.textContent = `${appState.selectedCareer.title} için hazırlanmış promptu kopyalayıp istediğin AI görsel aracına yapıştırabilirsin.`;
   ui.portraitLoading.textContent = "🎨 Prompt hazırlanıyor...";
   const prompt = buildImagePrompt(appState.selectedCareer.title);
   ui.portraitPromptOutput.value = prompt;
@@ -1004,9 +1011,9 @@ async function downloadPDF() {
   doc.text("BEWARE!: JOBS", 18, 18);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(11);
-  doc.text("Profesyonel Kariyer Degerlendirme Dosyasi", 18, 26);
+  doc.text("Profesyonel Kariyer Değerlendirme Dosyası", 18, 26);
   doc.setFontSize(9);
-  doc.text(`Hazirlanan kisi: ${appState.userName || "Ogrenci"}`, 18, 36);
+  doc.text(`Hazırlanan kişi: ${appState.userName || "Öğrenci"}`, 18, 36);
   doc.text(`Tarih: ${new Date().toLocaleDateString("tr-TR")}`, 18, 42);
 
   doc.setTextColor(140, 106, 67);
@@ -1016,12 +1023,12 @@ async function downloadPDF() {
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(90, 90, 90);
-  const introLines = doc.splitTextToSize("Bu rapor, secilen meslegin neden on plana ciktigini, gelecekteki potansiyelini ve bu alani nasil daha derin arastirabilecegini daha profesyonel bir duzende sunar.", 174);
+  const introLines = doc.splitTextToSize("Bu rapor, seçilen mesleğin neden öne çıktığını, gelecekteki potansiyelini ve bu alanı nasıl daha derin araştırabileceğini daha profesyonel bir düzende sunar.", 174);
   doc.text(introLines, 18, 83);
 
-  drawPdfBadge(doc, { x: 18, y: 96, label: "Maas Araligi", value: career.salaryRange });
+  drawPdfBadge(doc, { x: 18, y: 96, label: "Maaş Aralığı", value: career.salaryRange });
   drawPdfBadge(doc, { x: 74, y: 96, label: "Gelecek Skoru", value: `${career.futureScore}/100` });
-  drawPdfBadge(doc, { x: 130, y: 96, label: "RIASEC Baskin Tip", value: typeNames[topType?.[0]] || "-" });
+  drawPdfBadge(doc, { x: 130, y: 96, label: "RIASEC Baskın Tip", value: typeNames[topType?.[0]] || "-" });
 
   const summaryHeight = getPdfBoxHeight(doc, summaryText, 172);
   drawPdfInfoBox(doc, {
@@ -1029,14 +1036,14 @@ async function downloadPDF() {
     y: 122,
     w: 174,
     h: summaryHeight,
-    title: "Meslege Kisa Bakis",
+    title: "Mesleğe Kısa Bakış",
     body: summaryText
   });
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   doc.setTextColor(31, 31, 31);
-  doc.text("Bu Meslek Neden Sana Onerildi?", 18, 132 + summaryHeight);
+  doc.text("Bu Meslek Neden Sana Önerildi?", 18, 132 + summaryHeight);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(70, 70, 70);
@@ -1053,7 +1060,7 @@ async function downloadPDF() {
     y: reasonEndY + 8,
     w: 84,
     h: traitBoxHeight,
-    title: "Sende Uyusan Yonler",
+    title: "Sende Uyuşan Yönler",
     body: traitMatchText
   });
   drawPdfInfoBox(doc, {
@@ -1061,7 +1068,7 @@ async function downloadPDF() {
     y: reasonEndY + 8,
     w: 84,
     h: traitBoxHeight,
-    title: "Bu Alanda Guclu Olan Yonler",
+    title: "Bu Alanda Güçlü Olan Yönler",
     body: expectedTraitsText
   });
 
@@ -1083,11 +1090,11 @@ async function downloadPDF() {
   doc.setTextColor(31, 31, 31);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(17);
-  doc.text("Bu Meslegi Daha Derin Arastirmak Icin", 18, 24);
+  doc.text("Bu Mesleği Daha Derin Araştırmak İçin", 18, 24);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(80, 80, 80);
-  doc.text("Asagidaki adimlar bu meslegi yuzeysel degil, daha bilincli sekilde taniman icin hazirlandi.", 18, 32);
+  doc.text("Aşağıdaki adımlar bu mesleği yüzeysel değil, daha bilinçli şekilde tanıman için hazırlandı.", 18, 32);
 
   let y = 44;
   researchGuide.forEach((item, index) => {
@@ -1105,14 +1112,14 @@ async function downloadPDF() {
     y += Math.max(22, (lines.length * 5) + 10);
   });
 
-  const profileText = `En baskin RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. Ilk 3 yonun: ${topTraits.join(", ") || "Belirlenemedi"}. Bu kombinasyon, senin meslek seciminde hangi ortamlarda daha rahat ve guclu hissedebilecegine dair ipucu verir.`;
+  const profileText = `En baskın RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. İlk 3 yönün: ${topTraits.join(", ") || "Belirlenemedi"}. Bu kombinasyon, senin meslek seçiminde hangi ortamlarda daha rahat ve güçlü hissedebileceğine dair ipucu verir.`;
   const profileHeight = getPdfBoxHeight(doc, profileText, 174);
   drawPdfInfoBox(doc, {
     x: 18,
     y: y + 4,
     w: 174,
     h: profileHeight,
-    title: "Kisilik Profilin ve Meslek Uyumu",
+    title: "Kişilik Profilin ve Meslek Uyumu",
     body: profileText
   });
 
@@ -1120,11 +1127,11 @@ async function downloadPDF() {
   doc.setFont("helvetica", "bold");
   doc.setFontSize(15);
   doc.setTextColor(31, 31, 31);
-  doc.text("Benim Dusuncelerim ve Notlarim", 18, notesStartY);
+  doc.text("Benim Düşüncelerim ve Notlarım", 18, notesStartY);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(90, 90, 90);
-  doc.text("Bu alanla ilgili kendi fikirlerini, arastirma notlarini veya ogretmeninden aldigin onerileri buraya ekleyebilirsin.", 18, notesStartY + 7);
+  doc.text("Bu alanla ilgili kendi fikirlerini, araştırma notlarını veya öğretmeninden aldığın önerileri buraya ekleyebilirsin.", 18, notesStartY + 7);
   doc.setDrawColor(185, 185, 185);
   doc.roundedRect(18, notesStartY + 12, 174, 88, 4, 4);
 
@@ -1288,7 +1295,7 @@ function bindEvents() {
       const prompt = ui.portraitPromptOutput?.value?.trim();
       if (!prompt) return;
       await navigator.clipboard.writeText(prompt);
-      ui.portraitSubtitle.textContent = "Prompt kopyalandi. Simdi bunu istedigin AI gorsel aracina yapistirabilirsin.";
+      ui.portraitSubtitle.textContent = "Prompt kopyalandı. Şimdi bunu istediğin AI görsel aracına yapıştırabilirsin.";
     };
   }
   document.getElementById("vision-btn").onclick = () => document.getElementById("vision-modal").classList.remove("hidden");
