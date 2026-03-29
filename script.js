@@ -972,28 +972,145 @@ async function downloadPDF() {
   if (!appState.selectedCareer) { alert("Lütfen bir meslek seçin."); return; }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
+  const career = getSelectedCareerData() || appState.selectedCareer;
+  const topTraits = getUserTopTraits();
+  const matchedTraits = getRecommendedTraitsForCareer(career);
+  const overlapTraits = matchedTraits.filter((trait) => topTraits.includes(trait));
+  const typeNames = getRiasecTypeNames();
+  const topType = Object.entries(appState.scores).sort((a, b) => b[1] - a[1])[0];
+  const reasonText = career.reason || "Kişilik özelliklerin ve ilgi alanların bu meslekle güçlü bir uyum gösteriyor.";
+  const researchGuide = [
+    "LinkedIn'de bu meslekte çalışan kişilerin profillerini incele ve kariyer yolculuklarına bak.",
+    "YouTube'da bu meslek için vlog, bir günüm veya day in the life videoları izle.",
+    "Üniversite bölümlerini, ders planlarını ve mezunların nerelerde çalıştığını araştır.",
+    "Bu alan için hangi sertifikaların, projelerin veya stajların avantaj sağladığını not al."
+  ];
+
+  doc.setFillColor(31, 31, 31);
+  doc.rect(0, 0, 210, 42, "F");
+  doc.setTextColor(250, 240, 230);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
+  doc.setFontSize(20);
+  doc.text("BEWARE!: JOBS", 20, 18);
+  doc.setFontSize(12);
+  doc.setFont("helvetica", "normal");
+  doc.text("AI Destekli Kariyer Raporu", 20, 27);
   doc.setTextColor(140, 106, 67);
-  doc.text("BEWARE!: JOBS - AI Kariyer Raporu", 20, 20);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(24);
+  doc.text(career.title, 20, 56);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.setTextColor(51, 51, 51);
-  doc.text(`Ad Soyad: ${appState.userName || "Öğrenci"}`, 20, 35);
-  doc.text(`Tarih: ${new Date().toLocaleDateString('tr-TR')}`, 20, 42);
-  doc.text(`Önerilen Meslek: ${appState.selectedCareer.title}`, 20, 52);
-  doc.text(`Neden Bu Meslek?`, 20, 62);
-  const reasonLines = doc.splitTextToSize(appState.selectedCareer.reason || "Kişilik özelliklerin uyumlu.", 170);
-  doc.text(reasonLines, 20, 69);
-  doc.text(`Maaş Aralığı: ${appState.selectedCareer.salaryRange}`, 20, 85);
-  doc.text(`Gelecek Skoru: ${appState.selectedCareer.futureScore}/100`, 20, 92);
-  doc.text(`AI Riski: ${appState.selectedCareer.aiRisk?.substring(0, 60)}`, 20, 99);
-  doc.text(`Gelecek Öngörüsü: ${appState.selectedCareer.futureOutlook?.substring(0, 80)}`, 20, 106);
-  const futureExplanationLines = doc.splitTextToSize(appState.selectedCareer.futureScoreExplanation || "Bu gelecek yüzdesi 10 kritere göre hesaplandı.", 170);
-  doc.text(futureExplanationLines, 20, 113);
-  const topType = Object.entries(appState.scores).sort((a,b) => b[1] - a[1])[0];
-  const typeNames = { R: "Gerçekçi", I: "Araştırmacı", A: "Sanatçı", S: "Sosyal", E: "Girişimci", C: "Geleneksel" };
-  doc.text(`Kişilik Tipi: ${typeNames[topType?.[0]]}`, 20, 135);
+  doc.setTextColor(70, 70, 70);
+  doc.text(`Hazırlanan kişi: ${appState.userName || "Öğrenci"}`, 20, 64);
+  doc.text(`Tarih: ${new Date().toLocaleDateString("tr-TR")}`, 20, 70);
+
+  drawPdfInfoBox(doc, {
+    x: 20,
+    y: 78,
+    w: 82,
+    h: 24,
+    title: "Meslek Özeti",
+    body: `${career.description || "Bu alan, güçlü ilgi ve becerilerinle birleşebilecek bir kariyer yolu sunar."}`
+  });
+  drawPdfInfoBox(doc, {
+    x: 108,
+    y: 78,
+    w: 82,
+    h: 24,
+    title: "Temel Göstergeler",
+    body: `Maaş: ${career.salaryRange}\nGelecek Skoru: ${career.futureScore}/100`
+  });
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(31, 31, 31);
+  doc.text("Bu Meslek Neden Sana Önerildi?", 20, 114);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(70, 70, 70);
+  const reasonLines = doc.splitTextToSize(reasonText, 170);
+  doc.text(reasonLines, 20, 121);
+
+  const reasonEndY = 121 + (reasonLines.length * 5);
+  drawPdfInfoBox(doc, {
+    x: 20,
+    y: reasonEndY + 6,
+    w: 82,
+    h: 30,
+    title: "Sende Uyuşan Özellikler",
+    body: overlapTraits.length
+      ? `Bu mesleğin önerilmesinde özellikle şu yönlerin etkili oldu: ${overlapTraits.join(", ")}.`
+      : `En güçlü kişilik yönlerin: ${topTraits.join(", ")}. Bu yönler bu alanı keşfetmen için iyi bir başlangıç sunuyor.`
+  });
+  drawPdfInfoBox(doc, {
+    x: 108,
+    y: reasonEndY + 6,
+    w: 82,
+    h: 30,
+    title: "Mesleğin Beklediği Yönler",
+    body: matchedTraits.length
+      ? `Bu meslek özellikle şu özelliklerle güçlenir: ${matchedTraits.join(", ")}.`
+      : `Bu alan için iletişim, sorumluluk ve öğrenme isteği önemli destekleyici özelliklerdir.`
+  });
+
+  const futureBoxY = reasonEndY + 42;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  doc.setTextColor(31, 31, 31);
+  doc.text("Gelecek Analizi", 20, futureBoxY);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(70, 70, 70);
+  const futureLines = doc.splitTextToSize(
+    `${career.futureScoreExplanation || "Bu gelecek yüzdesi 10 kritere göre hesaplandı."} AI etkisi: ${career.aiRisk || "Bu alan değişerek devam edebilir."} Gelecek öngörüsü: ${career.futureOutlook || "Talep gören ve kendini geliştirdikçe güçlenebilecek bir alan."}`,
+    170
+  );
+  doc.text(futureLines, 20, futureBoxY + 7);
+
+  doc.addPage();
+  doc.setFillColor(250, 240, 230);
+  doc.rect(0, 0, 210, 297, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.setTextColor(31, 31, 31);
+  doc.text("Bu Mesleği Daha Derin Araştırmak İçin", 20, 24);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(10);
+  doc.setTextColor(70, 70, 70);
+  let y = 36;
+  researchGuide.forEach((item, index) => {
+    const lines = doc.splitTextToSize(`${index + 1}. ${item}`, 168);
+    doc.text(lines, 22, y);
+    y += lines.length * 5 + 5;
+  });
+
+  drawPdfInfoBox(doc, {
+    x: 20,
+    y: y + 4,
+    w: 170,
+    h: 26,
+    title: "Kişilik Tipin",
+    body: `En baskın RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. İlk 3 yönün: ${topTraits.join(", ") || "Belirlenemedi"}.`
+  });
+
+  const notesStartY = y + 40;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  doc.setTextColor(31, 31, 31);
+  doc.text("Benim Düşüncelerim ve Notlarım", 20, notesStartY);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(90, 90, 90);
+  doc.text("Bu alanla ilgili kendi fikirlerini, araştırmalarını veya öğretmeninden aldığın önerileri buraya yazabilirsin.", 20, notesStartY + 7);
+
+  let lineY = notesStartY + 16;
+  for (let i = 0; i < 11; i += 1) {
+    doc.setDrawColor(180, 180, 180);
+    doc.line(20, lineY, 190, lineY);
+    lineY += 11;
+  }
+
   doc.save(`kariyer_raporu_${appState.selectedCareer.title}.pdf`);
 }
 
@@ -1002,6 +1119,40 @@ function shareResults() {
   const text = `🎯 BEWARE!: JOBS ile ${appState.selectedCareer.title} mesleği önerildi! Gelecek skoru: ${appState.selectedCareer.futureScore}/100.`;
   if (navigator.share) navigator.share({ title: "Kariyer Raporum", text: text });
   else { navigator.clipboard.writeText(text); alert("✅ Kopyalandı!"); }
+}
+
+function getRiasecTypeNames() {
+  return { R: "Gerçekçi", I: "Araştırmacı", A: "Sanatçı", S: "Sosyal", E: "Girişimci", C: "Geleneksel" };
+}
+
+function getRecommendedTraitsForCareer(career) {
+  const typeNames = getRiasecTypeNames();
+  return (career?.riasecMatch || [])
+    .map((key) => typeNames[key])
+    .filter(Boolean);
+}
+
+function getUserTopTraits() {
+  const typeNames = getRiasecTypeNames();
+  return Object.entries(appState.scores)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([key]) => typeNames[key])
+    .filter(Boolean);
+}
+
+function drawPdfInfoBox(doc, { x, y, w, h, title, body, fillColor = [255, 248, 238] }) {
+  doc.setFillColor(...fillColor);
+  doc.roundedRect(x, y, w, h, 4, 4, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(31, 31, 31);
+  doc.text(title, x + 4, y + 8);
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(9);
+  doc.setTextColor(70, 70, 70);
+  const lines = doc.splitTextToSize(body, w - 8);
+  doc.text(lines, x + 4, y + 15);
 }
 
 // NOT SİSTEMİ
