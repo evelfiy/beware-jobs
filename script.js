@@ -985,130 +985,153 @@ async function downloadPDF() {
     "Üniversite bölümlerini, ders planlarını ve mezunların nerelerde çalıştığını araştır.",
     "Bu alan için hangi sertifikaların, projelerin veya stajların avantaj sağladığını not al."
   ];
+  const summaryText = career.description || "Bu alan, güçlü ilgi ve becerilerinle birleşebilecek bir kariyer yolu sunar.";
+  const traitMatchText = overlapTraits.length
+    ? `Bu mesleğin önerilmesinde özellikle şu yönlerin etkili oldu: ${overlapTraits.join(", ")}.`
+    : `En güçlü kişilik yönlerin: ${topTraits.join(", ")}. Bu yönler bu alanı keşfetmen için iyi bir başlangıç sunuyor.`;
+  const expectedTraitsText = matchedTraits.length
+    ? `Bu meslek özellikle şu özelliklerle güçlenir: ${matchedTraits.join(", ")}.`
+    : "Bu alan için iletişim, sorumluluk ve öğrenme isteği önemli destekleyici özelliklerdir.";
+  const futureText = `${career.futureScoreExplanation || "Bu gelecek yüzdesi 10 kritere göre hesaplandı."} AI etkisi: ${career.aiRisk || "Bu alan değişerek devam edebilir."} Gelecek öngörüsü: ${career.futureOutlook || "Talep gören ve kendini geliştirdikçe güçlenebilecek bir alan."}`;
 
-  doc.setFillColor(31, 31, 31);
-  doc.rect(0, 0, 210, 42, "F");
+  doc.setFillColor(28, 28, 28);
+  doc.rect(0, 0, 210, 52, "F");
+  doc.setFillColor(140, 106, 67);
+  doc.rect(0, 52, 210, 6, "F");
   doc.setTextColor(250, 240, 230);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
-  doc.text("BEWARE!: JOBS", 20, 18);
-  doc.setFontSize(12);
+  doc.text("BEWARE!: JOBS", 18, 18);
   doc.setFont("helvetica", "normal");
-  doc.text("AI Destekli Kariyer Raporu", 20, 27);
+  doc.setFontSize(11);
+  doc.text("Profesyonel Kariyer Degerlendirme Dosyasi", 18, 26);
+  doc.setFontSize(9);
+  doc.text(`Hazirlanan kisi: ${appState.userName || "Ogrenci"}`, 18, 36);
+  doc.text(`Tarih: ${new Date().toLocaleDateString("tr-TR")}`, 18, 42);
+
   doc.setTextColor(140, 106, 67);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(24);
-  doc.text(career.title, 20, 56);
+  doc.setFontSize(23);
+  doc.text(career.title, 18, 74);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.setTextColor(70, 70, 70);
-  doc.text(`Hazırlanan kişi: ${appState.userName || "Öğrenci"}`, 20, 64);
-  doc.text(`Tarih: ${new Date().toLocaleDateString("tr-TR")}`, 20, 70);
+  doc.setTextColor(90, 90, 90);
+  const introLines = doc.splitTextToSize("Bu rapor, secilen meslegin neden on plana ciktigini, gelecekteki potansiyelini ve bu alani nasil daha derin arastirabilecegini daha profesyonel bir duzende sunar.", 174);
+  doc.text(introLines, 18, 83);
 
+  drawPdfBadge(doc, { x: 18, y: 96, label: "Maas Araligi", value: career.salaryRange });
+  drawPdfBadge(doc, { x: 74, y: 96, label: "Gelecek Skoru", value: `${career.futureScore}/100` });
+  drawPdfBadge(doc, { x: 130, y: 96, label: "RIASEC Baskin Tip", value: typeNames[topType?.[0]] || "-" });
+
+  const summaryHeight = getPdfBoxHeight(doc, summaryText, 172);
   drawPdfInfoBox(doc, {
-    x: 20,
-    y: 78,
-    w: 82,
-    h: 24,
-    title: "Meslek Özeti",
-    body: `${career.description || "Bu alan, güçlü ilgi ve becerilerinle birleşebilecek bir kariyer yolu sunar."}`
-  });
-  drawPdfInfoBox(doc, {
-    x: 108,
-    y: 78,
-    w: 82,
-    h: 24,
-    title: "Temel Göstergeler",
-    body: `Maaş: ${career.salaryRange}\nGelecek Skoru: ${career.futureScore}/100`
+    x: 18,
+    y: 122,
+    w: 174,
+    h: summaryHeight,
+    title: "Meslege Kisa Bakis",
+    body: summaryText
   });
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   doc.setTextColor(31, 31, 31);
-  doc.text("Bu Meslek Neden Sana Önerildi?", 20, 114);
+  doc.text("Bu Meslek Neden Sana Onerildi?", 18, 132 + summaryHeight);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(70, 70, 70);
-  const reasonLines = doc.splitTextToSize(reasonText, 170);
-  doc.text(reasonLines, 20, 121);
+  const reasonLines = doc.splitTextToSize(reasonText, 174);
+  doc.text(reasonLines, 18, 139 + summaryHeight);
 
-  const reasonEndY = 121 + (reasonLines.length * 5);
-  drawPdfInfoBox(doc, {
-    x: 20,
-    y: reasonEndY + 6,
-    w: 82,
-    h: 30,
-    title: "Sende Uyuşan Özellikler",
-    body: overlapTraits.length
-      ? `Bu mesleğin önerilmesinde özellikle şu yönlerin etkili oldu: ${overlapTraits.join(", ")}.`
-      : `En güçlü kişilik yönlerin: ${topTraits.join(", ")}. Bu yönler bu alanı keşfetmen için iyi bir başlangıç sunuyor.`
-  });
-  drawPdfInfoBox(doc, {
-    x: 108,
-    y: reasonEndY + 6,
-    w: 82,
-    h: 30,
-    title: "Mesleğin Beklediği Yönler",
-    body: matchedTraits.length
-      ? `Bu meslek özellikle şu özelliklerle güçlenir: ${matchedTraits.join(", ")}.`
-      : `Bu alan için iletişim, sorumluluk ve öğrenme isteği önemli destekleyici özelliklerdir.`
-  });
-
-  const futureBoxY = reasonEndY + 42;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.setTextColor(31, 31, 31);
-  doc.text("Gelecek Analizi", 20, futureBoxY);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(70, 70, 70);
-  const futureLines = doc.splitTextToSize(
-    `${career.futureScoreExplanation || "Bu gelecek yüzdesi 10 kritere göre hesaplandı."} AI etkisi: ${career.aiRisk || "Bu alan değişerek devam edebilir."} Gelecek öngörüsü: ${career.futureOutlook || "Talep gören ve kendini geliştirdikçe güçlenebilecek bir alan."}`,
-    170
+  const reasonEndY = 139 + summaryHeight + (reasonLines.length * 5);
+  const traitBoxHeight = Math.max(
+    getPdfBoxHeight(doc, traitMatchText, 84),
+    getPdfBoxHeight(doc, expectedTraitsText, 84)
   );
-  doc.text(futureLines, 20, futureBoxY + 7);
+  drawPdfInfoBox(doc, {
+    x: 18,
+    y: reasonEndY + 8,
+    w: 84,
+    h: traitBoxHeight,
+    title: "Sende Uyusan Yonler",
+    body: traitMatchText
+  });
+  drawPdfInfoBox(doc, {
+    x: 108,
+    y: reasonEndY + 8,
+    w: 84,
+    h: traitBoxHeight,
+    title: "Bu Alanda Guclu Olan Yonler",
+    body: expectedTraitsText
+  });
+
+  const futureHeight = getPdfBoxHeight(doc, futureText, 174);
+  drawPdfInfoBox(doc, {
+    x: 18,
+    y: reasonEndY + 16 + traitBoxHeight,
+    w: 174,
+    h: futureHeight,
+    title: "Gelecek Analizi",
+    body: futureText
+  });
 
   doc.addPage();
-  doc.setFillColor(250, 240, 230);
+  doc.setFillColor(252, 248, 241);
   doc.rect(0, 0, 210, 297, "F");
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(16);
+  doc.setFillColor(140, 106, 67);
+  doc.rect(0, 0, 210, 10, "F");
   doc.setTextColor(31, 31, 31);
-  doc.text("Bu Mesleği Daha Derin Araştırmak İçin", 20, 24);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(17);
+  doc.text("Bu Meslegi Daha Derin Arastirmak Icin", 18, 24);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.setTextColor(70, 70, 70);
-  let y = 36;
+  doc.setTextColor(80, 80, 80);
+  doc.text("Asagidaki adimlar bu meslegi yuzeysel degil, daha bilincli sekilde taniman icin hazirlandi.", 18, 32);
+
+  let y = 44;
   researchGuide.forEach((item, index) => {
-    const lines = doc.splitTextToSize(`${index + 1}. ${item}`, 168);
-    doc.text(lines, 22, y);
-    y += lines.length * 5 + 5;
+    doc.setFillColor(255, 255, 255);
+    doc.roundedRect(18, y - 5, 174, 18, 4, 4, "F");
+    doc.setTextColor(140, 106, 67);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(11);
+    doc.text(`${index + 1}.`, 24, y + 2);
+    doc.setTextColor(70, 70, 70);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    const lines = doc.splitTextToSize(item, 156);
+    doc.text(lines, 34, y + 2);
+    y += Math.max(22, (lines.length * 5) + 10);
   });
 
+  const profileText = `En baskin RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. Ilk 3 yonun: ${topTraits.join(", ") || "Belirlenemedi"}. Bu kombinasyon, senin meslek seciminde hangi ortamlarda daha rahat ve guclu hissedebilecegine dair ipucu verir.`;
+  const profileHeight = getPdfBoxHeight(doc, profileText, 174);
   drawPdfInfoBox(doc, {
-    x: 20,
+    x: 18,
     y: y + 4,
-    w: 170,
-    h: 26,
-    title: "Kişilik Tipin",
-    body: `En baskın RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. İlk 3 yönün: ${topTraits.join(", ") || "Belirlenemedi"}.`
+    w: 174,
+    h: profileHeight,
+    title: "Kisilik Profilin ve Meslek Uyumu",
+    body: profileText
   });
 
-  const notesStartY = y + 40;
+  const notesStartY = y + 18 + profileHeight;
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(14);
+  doc.setFontSize(15);
   doc.setTextColor(31, 31, 31);
-  doc.text("Benim Düşüncelerim ve Notlarım", 20, notesStartY);
+  doc.text("Benim Dusuncelerim ve Notlarim", 18, notesStartY);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
   doc.setTextColor(90, 90, 90);
-  doc.text("Bu alanla ilgili kendi fikirlerini, araştırmalarını veya öğretmeninden aldığın önerileri buraya yazabilirsin.", 20, notesStartY + 7);
+  doc.text("Bu alanla ilgili kendi fikirlerini, arastirma notlarini veya ogretmeninden aldigin onerileri buraya ekleyebilirsin.", 18, notesStartY + 7);
+  doc.setDrawColor(185, 185, 185);
+  doc.roundedRect(18, notesStartY + 12, 174, 88, 4, 4);
 
-  let lineY = notesStartY + 16;
-  for (let i = 0; i < 11; i += 1) {
-    doc.setDrawColor(180, 180, 180);
-    doc.line(20, lineY, 190, lineY);
-    lineY += 11;
+  let lineY = notesStartY + 22;
+  for (let i = 0; i < 6; i += 1) {
+    doc.line(24, lineY, 186, lineY);
+    lineY += 12;
   }
 
   doc.save(`kariyer_raporu_${appState.selectedCareer.title}.pdf`);
@@ -1153,6 +1176,24 @@ function drawPdfInfoBox(doc, { x, y, w, h, title, body, fillColor = [255, 248, 2
   doc.setTextColor(70, 70, 70);
   const lines = doc.splitTextToSize(body, w - 8);
   doc.text(lines, x + 4, y + 15);
+}
+
+function getPdfBoxHeight(doc, body, width) {
+  const lines = doc.splitTextToSize(body, width - 8);
+  return Math.max(24, 18 + (lines.length * 4.5));
+}
+
+function drawPdfBadge(doc, { x, y, label, value }) {
+  doc.setFillColor(255, 248, 238);
+  doc.roundedRect(x, y, 52, 18, 4, 4, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(140, 106, 67);
+  doc.text(label, x + 4, y + 6.5);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(31, 31, 31);
+  doc.text(String(value), x + 4, y + 13);
 }
 
 // NOT SİSTEMİ
@@ -1240,6 +1281,8 @@ function bindEvents() {
   document.getElementById("drawer-open-btn").onclick = () => document.getElementById("notes-drawer").classList.remove("hidden");
   document.getElementById("drawer-close-btn").onclick = () => document.getElementById("notes-drawer").classList.add("hidden");
   document.getElementById("close-portrait-btn").onclick = () => ui.portraitModal.classList.add("hidden");
+  document.getElementById("intro-open-btn").onclick = () => document.getElementById("intro-modal").classList.remove("hidden");
+  document.getElementById("close-intro-btn").onclick = () => document.getElementById("intro-modal").classList.add("hidden");
   if (ui.copyPortraitPromptBtn) {
     ui.copyPortraitPromptBtn.onclick = async () => {
       const prompt = ui.portraitPromptOutput?.value?.trim();
