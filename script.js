@@ -1063,34 +1063,31 @@ async function downloadPDF() {
         <div style="font-size:18px;font-weight:700;">Gelecek Analizi</div>
         <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${futureText}</div>
       </div>
-    </div>
-
-    <div style="page-break-before:always;padding:26px 34px 34px 34px;background:#f8f3eb;">
-      <div style="height:8px;background:#8c6a43;border-radius:999px;margin-bottom:20px;"></div>
-      <div style="font-size:26px;font-weight:700;">Bir Sonraki Adım İçin</div>
-      <div style="margin-top:8px;font-size:14px;line-height:1.8;color:#5a534a;">
+      <div style="height:8px;background:#8c6a43;border-radius:999px;margin:24px 0 18px 0;"></div>
+      <div style="font-size:22px;font-weight:700;">Bir Sonraki Adım İçin</div>
+      <div style="margin-top:8px;font-size:13px;line-height:1.8;color:#5a534a;">
         Aşağıdaki küçük adımlar, bu mesleği daha gerçekçi şekilde araştırmana yardımcı olur.
       </div>
 
-      <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px;">
-        ${researchGuide.map((item, index) => `
-          <div style="background:#ffffff;border-radius:16px;padding:16px 18px;">
-            <div style="font-size:15px;font-weight:700;color:#8c6a43;">${index + 1}. Adım</div>
-            <div style="margin-top:8px;font-size:14px;line-height:1.8;color:#4d463d;">${item}</div>
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px;">
+        ${researchGuide.slice(0, 3).map((item, index) => `
+          <div style="background:#ffffff;border-radius:16px;padding:14px 16px;">
+            <div style="font-size:14px;font-weight:700;color:#8c6a43;">${index + 1}. Adım</div>
+            <div style="margin-top:6px;font-size:13px;line-height:1.7;color:#4d463d;">${item}</div>
           </div>
         `).join("")}
       </div>
 
-      <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:22px;">
-        <div style="font-size:18px;font-weight:700;">Kişilik Profili Özeti</div>
-        <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${profileText}</div>
+      <div style="background:#fffaf2;border-radius:18px;padding:18px;margin-top:18px;">
+        <div style="font-size:17px;font-weight:700;">Kişilik Profili Özeti</div>
+        <div style="margin-top:8px;font-size:13px;line-height:1.8;color:#4d463d;">${profileText}</div>
       </div>
 
-      <div style="margin-top:24px;">
-        <div style="font-size:22px;font-weight:700;">Benim Düşüncelerim ve Notlarım</div>
-        <div style="margin-top:8px;font-size:13px;line-height:1.7;color:#6b645a;">Bu alanla ilgili kendi düşüncelerini, soru işaretlerini veya araştırma notlarını buraya ekleyebilirsin.</div>
-        <div style="margin-top:16px;border:2px solid #d8cec0;border-radius:18px;padding:18px 18px 8px 18px;background:#fffdf9;">
-          ${Array.from({ length: 7 }).map(() => `<div style="height:30px;border-bottom:1px solid #d9d1c5;"></div>`).join("")}
+      <div style="margin-top:18px;">
+        <div style="font-size:20px;font-weight:700;">Benim Notlarım</div>
+        <div style="margin-top:6px;font-size:12px;line-height:1.7;color:#6b645a;">Bu alanla ilgili kısa düşüncelerini buraya ekleyebilirsin.</div>
+        <div style="margin-top:12px;border:2px solid #d8cec0;border-radius:18px;padding:14px 16px 8px 16px;background:#fffdf9;">
+          ${Array.from({ length: 4 }).map(() => `<div style="height:28px;border-bottom:1px solid #d9d1c5;"></div>`).join("")}
         </div>
       </div>
     </div>
