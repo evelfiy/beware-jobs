@@ -977,8 +977,6 @@ async function generateAIImage() {
 // PDF Download
 async function downloadPDF() {
   if (!appState.selectedCareer) { alert("Lütfen bir meslek seçin."); return; }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
   const career = getSelectedCareerData() || appState.selectedCareer;
   const topTraits = getUserTopTraits();
   const matchedTraits = getRecommendedTraitsForCareer(career);
@@ -1000,148 +998,119 @@ async function downloadPDF() {
     ? `Bu meslek özellikle şu özelliklerle güçlenir: ${matchedTraits.join(", ")}.`
     : "Bu alan için iletişim, sorumluluk ve öğrenme isteği önemli destekleyici özelliklerdir.";
   const futureText = `${career.futureScoreExplanation || "Bu gelecek yüzdesi 10 kritere göre hesaplandı."} AI etkisi: ${career.aiRisk || "Bu alan değişerek devam edebilir."} Gelecek öngörüsü: ${career.futureOutlook || "Talep gören ve kendini geliştirdikçe güçlenebilecek bir alan."}`;
-
-  doc.setFillColor(28, 28, 28);
-  doc.rect(0, 0, 210, 52, "F");
-  doc.setFillColor(140, 106, 67);
-  doc.rect(0, 52, 210, 6, "F");
-  doc.setTextColor(250, 240, 230);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.text("BEWARE!: JOBS", 18, 18);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(11);
-  doc.text("Profesyonel Kariyer Değerlendirme Dosyası", 18, 26);
-  doc.setFontSize(9);
-  doc.text(`Hazırlanan kişi: ${appState.userName || "Öğrenci"}`, 18, 36);
-  doc.text(`Tarih: ${new Date().toLocaleDateString("tr-TR")}`, 18, 42);
-
-  doc.setTextColor(140, 106, 67);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(23);
-  doc.text(career.title, 18, 74);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(90, 90, 90);
-  const introLines = doc.splitTextToSize("Bu rapor, seçilen mesleğin neden öne çıktığını, gelecekteki potansiyelini ve bu alanı nasıl daha derin araştırabileceğini daha profesyonel bir düzende sunar.", 174);
-  doc.text(introLines, 18, 83);
-
-  drawPdfBadge(doc, { x: 18, y: 96, label: "Maaş Aralığı", value: career.salaryRange });
-  drawPdfBadge(doc, { x: 74, y: 96, label: "Gelecek Skoru", value: `${career.futureScore}/100` });
-  drawPdfBadge(doc, { x: 130, y: 96, label: "RIASEC Baskın Tip", value: typeNames[topType?.[0]] || "-" });
-
-  const summaryHeight = getPdfBoxHeight(doc, summaryText, 172);
-  drawPdfInfoBox(doc, {
-    x: 18,
-    y: 122,
-    w: 174,
-    h: summaryHeight,
-    title: "Mesleğe Kısa Bakış",
-    body: summaryText
-  });
-
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
-  doc.setTextColor(31, 31, 31);
-  doc.text("Bu Meslek Neden Sana Önerildi?", 18, 132 + summaryHeight);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(70, 70, 70);
-  const reasonLines = doc.splitTextToSize(reasonText, 174);
-  doc.text(reasonLines, 18, 139 + summaryHeight);
-
-  const reasonEndY = 139 + summaryHeight + (reasonLines.length * 5);
-  const traitBoxHeight = Math.max(
-    getPdfBoxHeight(doc, traitMatchText, 84),
-    getPdfBoxHeight(doc, expectedTraitsText, 84)
-  );
-  drawPdfInfoBox(doc, {
-    x: 18,
-    y: reasonEndY + 8,
-    w: 84,
-    h: traitBoxHeight,
-    title: "Sende Uyuşan Yönler",
-    body: traitMatchText
-  });
-  drawPdfInfoBox(doc, {
-    x: 108,
-    y: reasonEndY + 8,
-    w: 84,
-    h: traitBoxHeight,
-    title: "Bu Alanda Güçlü Olan Yönler",
-    body: expectedTraitsText
-  });
-
-  const futureHeight = getPdfBoxHeight(doc, futureText, 174);
-  drawPdfInfoBox(doc, {
-    x: 18,
-    y: reasonEndY + 16 + traitBoxHeight,
-    w: 174,
-    h: futureHeight,
-    title: "Gelecek Analizi",
-    body: futureText
-  });
-
-  doc.addPage();
-  doc.setFillColor(252, 248, 241);
-  doc.rect(0, 0, 210, 297, "F");
-  doc.setFillColor(140, 106, 67);
-  doc.rect(0, 0, 210, 10, "F");
-  doc.setTextColor(31, 31, 31);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(17);
-  doc.text("Bu Mesleği Daha Derin Araştırmak İçin", 18, 24);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.setTextColor(80, 80, 80);
-  doc.text("Aşağıdaki adımlar bu mesleği yüzeysel değil, daha bilinçli şekilde tanıman için hazırlandı.", 18, 32);
-
-  let y = 44;
-  researchGuide.forEach((item, index) => {
-    doc.setFillColor(255, 255, 255);
-    doc.roundedRect(18, y - 5, 174, 18, 4, 4, "F");
-    doc.setTextColor(140, 106, 67);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.text(`${index + 1}.`, 24, y + 2);
-    doc.setTextColor(70, 70, 70);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    const lines = doc.splitTextToSize(item, 156);
-    doc.text(lines, 34, y + 2);
-    y += Math.max(22, (lines.length * 5) + 10);
-  });
-
   const profileText = `En baskın RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. İlk 3 yönün: ${topTraits.join(", ") || "Belirlenemedi"}. Bu kombinasyon, senin meslek seçiminde hangi ortamlarda daha rahat ve güçlü hissedebileceğine dair ipucu verir.`;
-  const profileHeight = getPdfBoxHeight(doc, profileText, 174);
-  drawPdfInfoBox(doc, {
-    x: 18,
-    y: y + 4,
-    w: 174,
-    h: profileHeight,
-    title: "Kişilik Profilin ve Meslek Uyumu",
-    body: profileText
-  });
 
-  const notesStartY = y + 18 + profileHeight;
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(15);
-  doc.setTextColor(31, 31, 31);
-  doc.text("Benim Düşüncelerim ve Notlarım", 18, notesStartY);
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(90, 90, 90);
-  doc.text("Bu alanla ilgili kendi fikirlerini, araştırma notlarını veya öğretmeninden aldığın önerileri buraya ekleyebilirsin.", 18, notesStartY + 7);
-  doc.setDrawColor(185, 185, 185);
-  doc.roundedRect(18, notesStartY + 12, 174, 88, 4, 4);
+  const wrapper = document.createElement("div");
+  wrapper.style.width = "794px";
+  wrapper.style.background = "#f8f3eb";
+  wrapper.style.color = "#1f1f1f";
+  wrapper.style.fontFamily = "Georgia, 'Times New Roman', serif";
+  wrapper.style.padding = "0";
 
-  let lineY = notesStartY + 22;
-  for (let i = 0; i < 6; i += 1) {
-    doc.line(24, lineY, 186, lineY);
-    lineY += 12;
-  }
+  wrapper.innerHTML = `
+    <div style="background:#1c1c1c;color:#faf0e6;padding:28px 34px 20px 34px;border-bottom:8px solid #8c6a43;">
+      <div style="font-size:24px;font-weight:700;letter-spacing:0.04em;">BEWARE!: JOBS</div>
+      <div style="font-size:13px;margin-top:6px;opacity:0.9;">Profesyonel Kariyer Değerlendirme Dosyası</div>
+      <div style="display:flex;justify-content:space-between;gap:16px;margin-top:18px;font-size:12px;opacity:0.9;">
+        <span>Hazırlanan kişi: ${appState.userName || "Öğrenci"}</span>
+        <span>Tarih: ${new Date().toLocaleDateString("tr-TR")}</span>
+      </div>
+    </div>
 
-  doc.save(`kariyer_raporu_${appState.selectedCareer.title}.pdf`);
+    <div style="padding:28px 34px 20px 34px;">
+      <div style="font-size:34px;font-weight:700;color:#8c6a43;line-height:1.2;">${career.title}</div>
+      <div style="font-size:14px;line-height:1.7;color:#5a534a;margin-top:12px;">
+        Bu rapor, seçilen mesleğin neden öne çıktığını, gelecekteki potansiyelini ve bu alanı nasıl daha derin araştırabileceğini daha profesyonel bir düzende sunar.
+      </div>
+
+      <div style="display:flex;gap:14px;margin-top:22px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:150px;background:#fffaf2;border-radius:16px;padding:16px;">
+          <div style="font-size:11px;font-weight:700;color:#8c6a43;text-transform:uppercase;letter-spacing:0.06em;">Maaş Aralığı</div>
+          <div style="font-size:20px;font-weight:700;margin-top:8px;">${career.salaryRange || "Bilgi yok"}</div>
+        </div>
+        <div style="flex:1;min-width:150px;background:#fffaf2;border-radius:16px;padding:16px;">
+          <div style="font-size:11px;font-weight:700;color:#8c6a43;text-transform:uppercase;letter-spacing:0.06em;">Gelecek Skoru</div>
+          <div style="font-size:20px;font-weight:700;margin-top:8px;">${career.futureScore}/100</div>
+        </div>
+        <div style="flex:1;min-width:150px;background:#fffaf2;border-radius:16px;padding:16px;">
+          <div style="font-size:11px;font-weight:700;color:#8c6a43;text-transform:uppercase;letter-spacing:0.06em;">RIASEC Baskın Tip</div>
+          <div style="font-size:20px;font-weight:700;margin-top:8px;">${typeNames[topType?.[0]] || "-"}</div>
+        </div>
+      </div>
+
+      <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:18px;">
+        <div style="font-size:18px;font-weight:700;">Mesleğe Kısa Bakış</div>
+        <div style="margin-top:10px;font-size:14px;line-height:1.8;color:#4d463d;">${summaryText}</div>
+      </div>
+
+      <div style="margin-top:24px;">
+        <div style="font-size:20px;font-weight:700;">Bu Meslek Neden Sana Önerildi?</div>
+        <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${reasonText}</div>
+      </div>
+
+      <div style="display:flex;gap:14px;margin-top:20px;align-items:stretch;">
+        <div style="flex:1;background:#fffaf2;border-radius:18px;padding:18px;">
+          <div style="font-size:17px;font-weight:700;">Sende Uyuşan Yönler</div>
+          <div style="margin-top:10px;font-size:13px;line-height:1.8;color:#4d463d;">${traitMatchText}</div>
+        </div>
+        <div style="flex:1;background:#fffaf2;border-radius:18px;padding:18px;">
+          <div style="font-size:17px;font-weight:700;">Bu Alanda Güçlü Olan Yönler</div>
+          <div style="margin-top:10px;font-size:13px;line-height:1.8;color:#4d463d;">${expectedTraitsText}</div>
+        </div>
+      </div>
+
+      <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:20px;">
+        <div style="font-size:18px;font-weight:700;">Gelecek Analizi</div>
+        <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${futureText}</div>
+      </div>
+    </div>
+
+    <div style="page-break-before:always;padding:26px 34px 34px 34px;background:#f8f3eb;">
+      <div style="height:8px;background:#8c6a43;border-radius:999px;margin-bottom:20px;"></div>
+      <div style="font-size:26px;font-weight:700;">Bu Mesleği Daha Derin Araştırmak İçin</div>
+      <div style="margin-top:8px;font-size:14px;line-height:1.8;color:#5a534a;">
+        Aşağıdaki adımlar bu mesleği yüzeysel değil, daha bilinçli şekilde tanıman için hazırlandı.
+      </div>
+
+      <div style="margin-top:22px;display:flex;flex-direction:column;gap:12px;">
+        ${researchGuide.map((item, index) => `
+          <div style="background:#ffffff;border-radius:16px;padding:16px 18px;">
+            <div style="font-size:15px;font-weight:700;color:#8c6a43;">${index + 1}. Adım</div>
+            <div style="margin-top:8px;font-size:14px;line-height:1.8;color:#4d463d;">${item}</div>
+          </div>
+        `).join("")}
+      </div>
+
+      <div style="background:#fffaf2;border-radius:18px;padding:20px;margin-top:22px;">
+        <div style="font-size:18px;font-weight:700;">Kişilik Profilin ve Meslek Uyumu</div>
+        <div style="margin-top:10px;font-size:14px;line-height:1.9;color:#4d463d;">${profileText}</div>
+      </div>
+
+      <div style="margin-top:24px;">
+        <div style="font-size:22px;font-weight:700;">Benim Düşüncelerim ve Notlarım</div>
+        <div style="margin-top:8px;font-size:13px;line-height:1.7;color:#6b645a;">Bu alanla ilgili kendi fikirlerini, araştırma notlarını veya öğretmeninden aldığın önerileri buraya ekleyebilirsin.</div>
+        <div style="margin-top:16px;border:2px solid #d8cec0;border-radius:18px;padding:18px 18px 8px 18px;background:#fffdf9;">
+          ${Array.from({ length: 8 }).map(() => `<div style="height:28px;border-bottom:1px solid #d9d1c5;"></div>`).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(wrapper);
+
+  await window.html2pdf()
+    .set({
+      margin: 0,
+      filename: `kariyer_raporu_${appState.selectedCareer.title}.pdf`,
+      image: { type: "jpeg", quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: "#f8f3eb" },
+      jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
+      pagebreak: { mode: ["css", "legacy"] }
+    })
+    .from(wrapper)
+    .save();
+
+  wrapper.remove();
 }
 
 function shareResults() {
