@@ -879,7 +879,17 @@ function prepareVisionBoard(career) {
   if (!career) return;
   const topType = Object.entries(appState.scores).sort((a,b) => b[1] - a[1])[0];
   const typeNames = { R: "Gerçekçi", I: "Araştırmacı", A: "Sanatçı", S: "Sosyal", E: "Girişimci", C: "Geleneksel" };
-  ui.visionBoardPreview.innerHTML = `<div><h4 class="text-base font-bold">${career.title}</h4><p class="text-xs italic text-bronze">"${INSPIRATION_QUOTES[Math.floor(Math.random() * INSPIRATION_QUOTES.length)]}"</p><div class="grid grid-cols-2 gap-2 text-[11px] mt-2"><div class="bg-[#faf0e6] p-1 rounded">💰 ${career.salaryRange}</div><div class="bg-[#faf0e6] p-1 rounded">📈 ${career.futureScore}/100</div><div class="bg-[#faf0e6] p-1 rounded">🤖 ${career.aiRisk?.substring(0, 40)}</div><div class="bg-[#faf0e6] p-1 rounded">🎯 ${typeNames[topType?.[0]]}</div></div><p class="mt-3 text-[11px] leading-5 text-smoke">${career.futureScoreExplanation || "Bu gelecek yüzdesi 10 kritere göre hesaplandı."}</p></div>`;
+  ui.visionBoardPreview.innerHTML = `<div>
+    <h4 class="text-base font-bold">${career.title}</h4>
+    <p class="text-xs italic text-bronze">"${INSPIRATION_QUOTES[Math.floor(Math.random() * INSPIRATION_QUOTES.length)]}"</p>
+    <div class="grid grid-cols-2 gap-2 text-[11px] mt-3">
+      <div class="bg-[#faf0e6] p-2 rounded">💰 ${career.salaryRange}</div>
+      <div class="bg-[#faf0e6] p-2 rounded">📈 ${career.futureScore}/100</div>
+      <div class="bg-[#faf0e6] p-2 rounded">🎯 ${typeNames[topType?.[0]]}</div>
+      <div class="bg-[#faf0e6] p-2 rounded">🧭 ${career.riasecMatch?.join("-") || "RIASEC"}</div>
+    </div>
+    <p class="mt-3 text-[11px] leading-5 text-smoke">Bu kart, seçtiğin meslek için görsel üretirken kullanacağın kısa yönleri gösterir. Prompt her seferinde bu mesleğe özel hazırlanır.</p>
+  </div>`;
 }
 
 // AI CHAT - GELİŞTİRİLMİŞ

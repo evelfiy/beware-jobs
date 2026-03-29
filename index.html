@@ -221,12 +221,14 @@
 
           <div class="mt-4 grid gap-4 md:grid-cols-2">
             <section class="rounded-2xl border border-black/15 bg-[#fffaf2] p-5">
-              <h3 class="text-xl font-semibold text-ink">🎯 Gelecek Vizyon Kartı</h3>
-              <p class="mt-1 text-sm text-smoke">Seçilen meslek ve AI analizi</p>
+              <h3 class="text-xl font-semibold text-ink">🎨 Mesleğini Görselleştir</h3>
+              <p class="mt-1 text-sm text-smoke">Seçtiğin meslek için özel prompt hazırla, kopyala ve istediğin görsel AI aracında dene.</p>
               <div id="vision-board-preview" class="mt-4 rounded-2xl border border-black/15 bg-white p-4"></div>
               <div class="mt-4 flex flex-col gap-2 sm:flex-row">
-                <button id="download-vision-pdf-btn" type="button" class="rounded-xl border border-black/25 bg-[#1f1f1f] px-4 py-2 text-sm font-semibold text-[#faf0e6] transition hover:opacity-90">📄 PDF Rapor İndir</button>
                 <button id="generate-ai-image-btn" type="button" class="rounded-xl border border-black/25 bg-white px-4 py-2 text-sm font-semibold text-ink transition hover:bg-[#f7f1e6]">🎨 AI Görsel Promptu Al</button>
+              </div>
+              <div class="mt-4 rounded-xl border border-black/10 bg-[#fff8ee] p-3 text-sm text-smoke">
+                <strong class="text-ink">Küçük fikir:</strong> İstersen bu promptu kullan, fotoğrafını da ekleyerek kendini bu mesleğin içinde nasıl göründüğünle ilgili bir görsel oluştur.
               </div>
             </section>
 
@@ -286,11 +288,11 @@
           </div>
           <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
             <p class="font-semibold text-ink">Nasıl Çalışır?</p>
-            <p class="mt-2 text-sm text-smoke">Önce ismini girersin. Sonra RIASEC testini çözersin. Sistem sana 3 meslek önerir. Daha sonra seçtiğin meslek için mentor, kriz senaryoları, vloglar, LinkedIn yönlendirmeleri ve PDF raporu açılır.</p>
+            <p class="mt-2 text-sm text-smoke">Önce ismini girersin. Sonra RIASEC testini çözersin. Sistem sana 3 meslek önerir. Daha sonra seçtiğin meslek için mentor, kriz senaryoları, vloglar, LinkedIn yönlendirmeleri ve görsel prompt alanı açılır.</p>
           </div>
           <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
             <p class="font-semibold text-ink">Öne Çıkan Özellikler</p>
-            <p class="mt-2 text-sm text-smoke">AI kariyer mentoru, mesleğe özel kriz simülatörü, AI görsel promptu, kişiliğe uygun öneriler, tarihten ilham veren isimler, not alma alanı ve profesyonel PDF raporu bu uygulamanın ana parçalarıdır.</p>
+            <p class="mt-2 text-sm text-smoke">AI kariyer mentoru, mesleğe özel kriz simülatörü, AI görsel promptu, kişiliğe uygun öneriler, tarihten ilham veren isimler ve not alma alanı bu uygulamanın ana parçalarıdır.</p>
           </div>
           <div class="rounded-xl border border-black/15 bg-[#fffaf2] p-4">
             <p class="font-semibold text-ink">Gelecek Yüzdesi Neye Göre?</p>
@@ -299,7 +301,7 @@
         </div>
         <div class="mt-4 rounded-xl border border-black/15 bg-white p-4">
           <p class="font-semibold text-ink">Kısa Kullanım Akışı</p>
-          <p class="mt-2 text-sm text-smoke">1. İsmini yaz. 2. Testi çöz. 3. Meslek seç. 4. Mentorla konuş. 5. Kriz kartlarını incele. 6. PDF raporunu indir. 7. İstersen notlarını ekle ve araştırmanı derinleştir.</p>
+          <p class="mt-2 text-sm text-smoke">1. İsmini yaz. 2. Testi çöz. 3. Meslek seç. 4. Mentorla konuş. 5. Kriz kartlarını incele. 6. Görsel promptunu al. 7. İstersen notlarını ekle ve araştırmanı derinleştir.</p>
         </div>
       </div>
     </div>
@@ -391,8 +393,6 @@
     </aside>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="questions-data.js"></script>
     <script src="script.js"></script>
   </body>
