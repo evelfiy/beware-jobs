@@ -997,7 +997,6 @@ async function downloadPDF() {
     ? `Bu meslek özellikle şu özelliklerle güçlenir: ${matchedTraits.join(", ")}.`
     : "Bu alan için iletişim, sorumluluk ve öğrenme isteği önemli destekleyici özelliklerdir.";
   const futureText = `${career.futureScore}/100 gelecek skoru; değişime uyum, pazar talebi ve mesleğin gelecekteki dayanıklılığı dikkate alınarak oluşturuldu. ${career.futureOutlook || "Bu alan kendini geliştirdikçe güçlenebilecek bir meslek yolu sunuyor."}`;
-  const profileText = `En baskın RIASEC tipin: ${typeNames[topType?.[0]] || "Belirlenemedi"}. İlk 3 yönün: ${topTraits.join(", ") || "Belirlenemedi"}. Bu kombinasyon, senin meslek seçiminde hangi ortamlarda daha rahat ve güçlü hissedebileceğine dair ipucu verir.`;
 
   const wrapper = document.createElement("div");
   wrapper.style.width = "794px";
@@ -1005,6 +1004,10 @@ async function downloadPDF() {
   wrapper.style.color = "#1f1f1f";
   wrapper.style.fontFamily = "Georgia, 'Times New Roman', serif";
   wrapper.style.padding = "0";
+  wrapper.style.position = "fixed";
+  wrapper.style.left = "-99999px";
+  wrapper.style.top = "0";
+  wrapper.style.zIndex = "-1";
 
   wrapper.innerHTML = `
     <div style="background:#1c1c1c;color:#faf0e6;padding:28px 34px 20px 34px;border-bottom:8px solid #8c6a43;">
@@ -1073,6 +1076,7 @@ async function downloadPDF() {
           </div>
         `).join("")}
       </div>
+    </div>
     </div>
   `;
 
