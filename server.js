@@ -315,6 +315,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.listen(PORT, "127.0.0.1", () => {
-  console.log(`BEWARE!: JOBS server calisiyor: http://127.0.0.1:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`BEWARE!: JOBS server calisiyor: http://0.0.0.0:${PORT}`);
 });
