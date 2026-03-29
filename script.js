@@ -669,12 +669,10 @@ function showScreen(screenId) {
   });
   document.getElementById(screenId + "-screen")?.classList.remove("hidden");
 
-  const introButton = document.getElementById("intro-open-btn");
   const notesButton = document.getElementById("drawer-open-btn");
-  const shouldHideFloatingButtons = screenId === "results";
+  const shouldHideNotesButton = screenId === "results";
 
-  if (introButton) introButton.classList.toggle("hidden", shouldHideFloatingButtons);
-  if (notesButton) notesButton.classList.toggle("hidden", shouldHideFloatingButtons);
+  if (notesButton) notesButton.classList.toggle("hidden", shouldHideNotesButton);
 }
 
 function onSaveName() {
@@ -1250,8 +1248,16 @@ function bindEvents() {
   document.getElementById("drawer-open-btn").onclick = () => document.getElementById("notes-drawer").classList.remove("hidden");
   document.getElementById("drawer-close-btn").onclick = () => document.getElementById("notes-drawer").classList.add("hidden");
   document.getElementById("close-portrait-btn").onclick = () => ui.portraitModal.classList.add("hidden");
-  document.getElementById("intro-open-btn").onclick = () => document.getElementById("intro-modal").classList.remove("hidden");
-  document.getElementById("close-intro-btn").onclick = () => document.getElementById("intro-modal").classList.add("hidden");
+  document.getElementById("intro-open-btn").onclick = () => {
+    const modal = document.getElementById("intro-modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  };
+  document.getElementById("close-intro-btn").onclick = () => {
+    const modal = document.getElementById("intro-modal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  };
   if (ui.copyPortraitPromptBtn) {
     ui.copyPortraitPromptBtn.onclick = async () => {
       const prompt = ui.portraitPromptOutput?.value?.trim();
