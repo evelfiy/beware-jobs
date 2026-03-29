@@ -1204,7 +1204,6 @@ function bindEvents() {
     if (ui.chatMessages) ui.chatMessages.innerHTML = "";
     resetCaseArea();
   };
-  document.getElementById("download-vision-pdf-btn").onclick = downloadPDF;
   document.getElementById("generate-ai-image-btn").onclick = generateAIImage;
   document.getElementById("share-results-btn").onclick = shareResults;
   if (ui.chatSendBtn) ui.chatSendBtn.onclick = sendChatMessage;
