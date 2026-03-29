@@ -465,27 +465,131 @@ function buildFallbackCase(job) {
 }
 
 function buildCrisisSimulations(job) {
-  const type = normalizeText(getSelectedCareerData()?.type || "");
-  const typeScenarios = {
-    teknoloji: [
-      { title: "Sistem Çöktü", scenario: "Yayınlanan ürünün kritik bir özelliği aniden çalışmıyor ve kullanıcı şikayetleri artıyor." },
-      { title: "Teslim Tarihi Yaklaştı", scenario: "Ekip gecikiyor ve müşteriye verilecek söz risk altına giriyor." },
-      { title: "Veri Hatası", scenario: "Yanlış veri akışı yüzünden raporlar hatalı görünmeye başlıyor." }
+  const careerSpecificScenarios = {
+    "Yazılım Geliştirici": [
+      { title: "Canlıda Hata", scenario: "Yeni sürüm yayına çıktıktan sonra ödeme ekranı hata vermeye başlıyor." },
+      { title: "Kod Çakışması", scenario: "Ekipte iki farklı geliştirici aynı modülü farklı şekilde değiştirmiş." },
+      { title: "Müşteri Baskısı", scenario: "Müşteri eksik test edilen özelliğin hemen yayına alınmasını istiyor." }
     ],
-    hukuk: [
-      { title: "Son Dakika Dosyası", scenario: "Duruşmaya az kalmışken dosyada kritik bir eksik fark ediliyor." },
-      { title: "Müvekkil Baskısı", scenario: "Müvekkil senden etik olmayan bir hızlandırma talep ediyor." },
-      { title: "Çelişkili Beyan", scenario: "Tanık ifadeleri birbirini tutmuyor ve stratejiyi yeniden kurmak gerekiyor." }
+    "Veri Bilimcisi": [
+      { title: "Kirli Veri", scenario: "Modeli eğitmek için gelen veri setinde çok sayıda eksik ve çelişkili kayıt var." },
+      { title: "Yanlı Sonuç", scenario: "Hazırladığın analiz, belirli bir kullanıcı grubunu haksız biçimde etkiliyor olabilir." },
+      { title: "Anlaşılmayan Rapor", scenario: "Yönetim ekibi hazırladığın teknik raporu anlamıyor ve hızlı karar bekliyor." }
     ],
-    egitim: [
-      { title: "Sınıf Krizi", scenario: "Sınıfta bir anda gerilim yükseliyor ve ders akışı bozuluyor." },
-      { title: "Motivasyon Düştü", scenario: "Öğrencilerin büyük kısmı derse ilgisini kaybetmiş görünüyor." },
-      { title: "Veli Görüşmesi", scenario: "Endişeli bir veli senden hızlı ve net çözüm bekliyor." }
+    "Yapay Zeka Mühendisi": [
+      { title: "Model Yanılıyor", scenario: "Geliştirdiğin model kritik örneklerde yanlış tahmin üretmeye başlıyor." },
+      { title: "Etik Sorun", scenario: "AI sisteminin adil davranmadığına dair geri bildirim geliyor." },
+      { title: "Maliyet Arttı", scenario: "Modeli çalıştırma maliyeti beklenenden çok daha yüksek çıktı." }
     ],
-    saglik: [
-      { title: "Yoğunluk Arttı", scenario: "Aynı anda çok sayıda hasta ilgilenilmesi gereken bir ortama geliyor." },
-      { title: "İletişim Sorunu", scenario: "Hasta ya da hasta yakını sürece güven duymamaya başlıyor." },
-      { title: "Hızlı Karar", scenario: "Kısıtlı bilgiyle öncelik belirlemen gereken bir an yaşanıyor." }
+    "Siber Güvenlik Uzmanı": [
+      { title: "Şüpheli Giriş", scenario: "Gece saatlerinde sistemde olağan dışı kullanıcı hareketleri görülüyor." },
+      { title: "Fidye Riski", scenario: "Bir çalışanın bilgisayarında zararlı yazılım belirtisi fark ediliyor." },
+      { title: "Açık Bulundu", scenario: "Müşteri verisine erişilebilecek ciddi bir güvenlik açığı tespit edildi." }
+    ],
+    "Psikolojik Danışman": [
+      { title: "Güven Kaybı", scenario: "Danışanın sana güveni sarsılmış gibi görünüyor ve konuşmak istemiyor." },
+      { title: "Aile Baskısı", scenario: "Aile, danışanın söylediklerini senden öğrenmek istiyor." },
+      { title: "Acil Yönlendirme", scenario: "Danışanın desteğinin okul ortamını aşabileceğini düşündüren işaretler var." }
+    ],
+    "Klinik Psikolog": [
+      { title: "Seans Krizi", scenario: "Seans sırasında danışan yoğun bir duygusal çöküş yaşıyor." },
+      { title: "Sınır İhlali", scenario: "Danışan seans dışı saatlerde sürekli sana ulaşmaya başlıyor." },
+      { title: "Yanlış Yorum Riski", scenario: "Yaptığın değerlendirme notlarının yanlış anlaşılma ihtimali ortaya çıkıyor." }
+    ],
+    "Endüstriyel Tasarımcı": [
+      { title: "Üretilemeyen Tasarım", scenario: "Çok beğenilen tasarımın fabrikada üretilemeyecek kadar karmaşık çıktı." },
+      { title: "Müşteri Fikri Değişti", scenario: "Sunuma saatler kala müşteri tasarım yönünü tamamen değiştirmek istiyor." },
+      { title: "Kullanıcı Sorunu", scenario: "Ürün estetik duruyor ama kullanıcı testlerinde rahat bulunmuyor." }
+    ],
+    "Grafik Tasarımcı": [
+      { title: "Marka Krizi", scenario: "Hazırladığın görsel, markanın kimliğiyle uyumsuz bulunuyor." },
+      { title: "Son Dakika Revize", scenario: "Teslime çok az kala tüm afiş tasarımını yeniden düzenlemen isteniyor." },
+      { title: "Benzer İş Tartışması", scenario: "Tasarladığın işin başka bir markaya fazla benzediği söyleniyor." }
+    ],
+    "Mimari Restorasyon Uzmanı": [
+      { title: "Tarihi Doku Riski", scenario: "Yapının onarımında kullanılan malzeme özgün yapıya zarar verebilir." },
+      { title: "Belgesiz Müdahale", scenario: "Daha önce yapıya kayıt dışı müdahale edildiği ortaya çıkıyor." },
+      { title: "Bütçe Kısıtı", scenario: "Koruma standartlarını düşürmeden daha düşük maliyet isteniyor." }
+    ],
+    "Mimar": [
+      { title: "Ruhsat Sorunu", scenario: "Hazırlanan proje yerel yönetmelikle tam uyumlu görünmüyor." },
+      { title: "Müşteri Çatışması", scenario: "Müşteri estetik istiyor ama alan güvenliği risk altına giriyor." },
+      { title: "Şantiye Değişikliği", scenario: "Uygulama sırasında projede zorunlu değişiklik yapılması gerekiyor." }
+    ],
+    "Dijital Pazarlama Uzmanı": [
+      { title: "Kampanya Tutmadı", scenario: "Büyük bütçeli reklam kampanyası beklenen dönüşü getirmedi." },
+      { title: "Yorum Krizi", scenario: "Markaya karşı sosyal medyada olumsuz yorumlar hızla artıyor." },
+      { title: "Yanlış Hedefleme", scenario: "Reklamlar yanlış kitleye gösterildiği için bütçe boşa gidiyor." }
+    ],
+    "İnsan Kaynakları Uzmanı": [
+      { title: "Yanlış İşe Alım", scenario: "Yeni işe alınan kişinin pozisyona uygun olmadığı kısa sürede anlaşılıyor." },
+      { title: "Ekip Gerilimi", scenario: "Aynı ekipteki iki çalışan arasında ciddi iletişim problemi var." },
+      { title: "Gizlilik Sorunu", scenario: "Aday değerlendirme notlarının yanlış kişilere gittiği fark ediliyor." }
+    ],
+    "Proje Yöneticisi": [
+      { title: "Takvim Sarktı", scenario: "Projede kritik teslim tarihi yaklaşıyor ama ekip geri kaldı." },
+      { title: "Kaynak Yetmiyor", scenario: "Bütçe ve insan kaynağı aynı anda yetersiz hale geliyor." },
+      { title: "Paydaş Baskısı", scenario: "Farklı yöneticiler projeden birbirine zıt beklentiler istiyor." }
+    ],
+    "Mekatronik Mühendisi": [
+      { title: "Robot Hatası", scenario: "Üretim hattındaki robot beklenmedik biçimde durmaya başladı." },
+      { title: "Sensör Sorunu", scenario: "Sistem yanlış veri okuduğu için hareketler hatalı gerçekleşiyor." },
+      { title: "Güvenlik Riski", scenario: "Otomasyon sistemi çalışan güvenliği açısından risk oluşturuyor olabilir." }
+    ],
+    "Biyomedikal Mühendisi": [
+      { title: "Cihaz Arızası", scenario: "Hastanede kullanılan bir cihaz kritik anda hatalı sonuç vermeye başlıyor." },
+      { title: "Kalibrasyon Sorunu", scenario: "Cihazın ölçümlerinin standarttan saptığı fark ediliyor." },
+      { title: "Kullanım Eğitimi Eksik", scenario: "Sağlık personeli cihazı doğru kullanmadığı için hata oranı artıyor." }
+    ],
+    "Çevre Mühendisi": [
+      { title: "Kirlilik Uyarısı", scenario: "Tesiste beklenmedik bir atık sızıntısı ihtimali ortaya çıktı." },
+      { title: "Denetim Yaklaşıyor", scenario: "Çevre denetimi öncesi kayıtların eksik olduğu fark edildi." },
+      { title: "Toplum Tepkisi", scenario: "Bölge halkı projenin çevreye zarar vereceğini düşünerek tepki gösteriyor." }
+    ],
+    "Doktor (Tıp)": [
+      { title: "Yanlış Öncelik Riski", scenario: "Acil serviste aynı anda birden fazla kritik hasta geliyor." },
+      { title: "Hasta Yakını Baskısı", scenario: "Hasta yakını senden hemen ve kesin cevap bekliyor." },
+      { title: "Eksik Bilgi", scenario: "Tanı için gerekli veriler eksik ama hızlı karar vermen gerekiyor." }
+    ],
+    "Diş Hekimi": [
+      { title: "Hasta Panikledi", scenario: "Tedavi sırasında hasta korkup işlemi yarıda bırakmak istiyor." },
+      { title: "Randevu Sıkıştı", scenario: "Acil gelen hasta yüzünden tüm günlük plan bozuluyor." },
+      { title: "Beklenmedik Komplikasyon", scenario: "Basit görünen işlem sırasında beklenmeyen bir sorun gelişiyor." }
+    ],
+    "Eczacı": [
+      { title: "İlaç Etkileşimi", scenario: "Hastanın almak istediği ilaçların birlikte risk yaratabileceği fark ediliyor." },
+      { title: "Stok Tükendi", scenario: "Sık sorulan kritik bir ilacın stoğu aniden bitiyor." },
+      { title: "Yanlış Reçete Şüphesi", scenario: "Reçetedeki doz bilgisinin hatalı olabileceğini düşünüyorsun." }
+    ],
+    "Hukukçu (Avukat)": [
+      { title: "Delil Geç Geldi", scenario: "Duruşmaya kısa süre kala davayı etkileyebilecek yeni bir belge geliyor." },
+      { title: "Etik Baskı", scenario: "Müvekkil senden doğru olmayan bir bilgiyi öne çıkarmanı istiyor." },
+      { title: "Strateji Çatışması", scenario: "Dosyadaki yeni gelişmeler savunma stratejisini tamamen değiştiriyor." }
+    ],
+    "Öğretmen": [
+      { title: "Sınıf Dağıldı", scenario: "Ders sırasında sınıf kontrolünü kaybetmeye başladığını hissediyorsun." },
+      { title: "Öğrenci Geri Çekildi", scenario: "Başarılı bir öğrenci son haftalarda belirgin şekilde içine kapanıyor." },
+      { title: "Veli Şikayeti", scenario: "Bir veli notlandırma konusunda sana sert bir itirazda bulunuyor." }
+    ],
+    "Akademisyen": [
+      { title: "Makale Reddi", scenario: "Uzun süredir hazırladığın çalışma önemli bir dergiden reddedildi." },
+      { title: "Etik İnceleme", scenario: "Araştırma verilerinin toplanma biçimiyle ilgili soru işaretleri oluştu." },
+      { title: "Ders-Araştırma Dengesi", scenario: "Yoğun ders yükü yüzünden araştırma takvimi ciddi biçimde aksıyor." }
+    ],
+    "Gazeteci": [
+      { title: "Kaynak Güvenilir mi?", scenario: "Çok çarpıcı bir bilgiye ulaştın ama kaynağın tam güvenilir görünmüyor." },
+      { title: "Baskı Altında Yayın", scenario: "Haberi hızlı girmen isteniyor ama doğrulama süreci tamamlanmadı." },
+      { title: "Etik İkilem", scenario: "Haber kamu yararı taşıyor ama bir kişinin özel hayatını da etkileyebilir." }
+    ],
+    "Fotoğrafçı": [
+      { title: "Ekipman Bozuldu", scenario: "Çekim günü en önemli ekipmanlardan biri çalışmamaya başladı." },
+      { title: "Müşteri Memnun Değil", scenario: "Teslim ettiğin fotoğraflar müşterinin beklentisini tam karşılamadı." },
+      { title: "Işık Kötüleşti", scenario: "Planlanan dış çekimde hava ve ışık bir anda bozuldu." }
+    ],
+    "Müzisyen": [
+      { title: "Sahne Öncesi Sorun", scenario: "Performansa kısa süre kala teknik ekipmanlardan biri arızalandı." },
+      { title: "Ekip Uyum Sorunu", scenario: "Grup üyeleri prova sırasında aynı yorumda buluşamıyor." },
+      { title: "Beklenmedik Kitle", scenario: "Sahnedeki dinleyici kitlesi beklediğinden çok farklı tepki veriyor." }
     ]
   };
 
@@ -495,7 +599,7 @@ function buildCrisisSimulations(job) {
     { title: "Beklenmedik Problem", scenario: `${job} rolünde plan dışı bir sorun ortaya çıkıyor ve çözüm üretmen gerekiyor.` }
   ];
 
-  return (typeScenarios[type] || generic).map((item, index) => ({
+  return (careerSpecificScenarios[job] || generic).map((item, index) => ({
     ...item,
     id: `${normalizeText(job)}-${index + 1}`,
     prompt: `Sen benim kariyer mentorumsun. ${job} rolü için şu kriz senaryosunu benimle adım adım tartış.\n\nSenaryo: ${item.scenario}\n\nBenden önce bu durumda iyi bir yaklaşım nasıl kurulur onu sorularla düşündür. Sonra benim çözümümü değerlendir. Cevaplarını Türkçe ver ve sohbeti mentorluk gibi sürdür.`
