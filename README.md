@@ -9,7 +9,7 @@ BEWARE!: JOBS, RIASEC tabanlı test ile kullanıcıya 3 kariyer önerisi sunan A
 ## Canlı Demo
 Yayın Linki: https://beware-jobs.onrender.com
 
-Demo Video: https://www.loom.com/share/75933e7e864945529e10471bf0524d09
+Demo Video: https://youtu.be/lVwuqp7qdIE
 
 ## Kullanılan Teknolojiler
 - HTML
