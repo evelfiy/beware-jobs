@@ -11,6 +11,16 @@ Yayın Linki: https://beware-jobs.onrender.com
 
 Demo Video: https://youtu.be/lVwuqp7qdIE
 
+## Kullanıcı Geri Bildirimleri
+- 5 kullanıcı ile test edildi.
+- Uygulamanın kullanım kolaylığı puanı: **5/5**
+- Meslek önerilerinin mantıklılığı puanı: **4.8/5**
+- AI kariyer mentorunun yararlılığı puanı: **4.8/5**
+- Uygulamayı arkadaşına önerme oranı: **%100**
+- En çok beğenilen özellikler: RIASEC testi, AI kariyer mentoru ve ilham veren kişiler bölümü.
+- En sık gelen öneriler: meslekleri karşılaştırabilme, sonuçları kaydedebilme ve veri tabanını daha da geliştirme.
+
+
 ## Kullanılan Teknolojiler
 - HTML
 - CSS
